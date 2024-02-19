@@ -1,0 +1,47 @@
+@resizer-size: 0.5px;
+@resizer-border: 2px;
+@colorPrimary: #004cff;
+
+.Resizer {
+  background: #000;
+  z-index: 5;
+  box-sizing: border-box;
+  background-clip: padding-box;
+  transition: 0.2s ease 0.1s;
+
+  &:hover {
+    background-color: @colorPrimary !important;
+  }
+
+  &.horizontal {
+    padding-top: @resizer-size;
+    margin: -@resizer-border 0;
+    border-top: @resizer-border solid rgba(255, 255, 255, 0);
+    border-bottom: @resizer-border solid rgba(255, 255, 255, 0);
+    cursor: ns-resize;
+
+    &:hover {
+      border-color: fade(@colorPrimary, 40) !important;
+    }
+  }
+
+  &.vertical {
+    padding-left: @resizer-size;
+    margin: 0 -@resizer-border;
+    border-left: @resizer-border solid rgba(255, 255, 255, 0);
+    border-right: @resizer-border solid rgba(255, 255, 255, 0);
+    cursor: ew-resize;
+
+    &:hover {
+      border-color: fade(@colorPrimary, 40) !important;
+    }
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+
+    &:hover {
+      border-color: transparent;
+    }
+  }
+}
