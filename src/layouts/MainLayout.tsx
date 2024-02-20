@@ -1,8 +1,9 @@
-import { ConfigProvider, Layout } from 'antd'
+import { ConfigProvider, Layout, Menu } from 'antd'
+import { MessageOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
-import { useSplitPane, useThemeToken } from '@/hooks'
+import { useAppStore, useSplitPane, useThemeToken } from '@/hooks'
 import { AUTH_TOKEN_KEY } from '@/config'
 import Loading from '@/components/Loading'
 import Sider from '@/components/Sider'
@@ -10,6 +11,7 @@ import Sider from '@/components/Sider'
 function MainLayout(props: any) {
   const { token } = useThemeToken()
   const navigate = useNavigate()
+  const [theme] = useAppStore(state => [state.theme])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -29,26 +31,47 @@ function MainLayout(props: any) {
     key: 'main',
   })
 
-  if (loading) {
-    return (
-      <Loading height="100vh" />
-    )
-  }
+  if (loading)
+    return <Loading height="100vh" />
 
   return (
-    <ConfigProvider theme={{
-      token: {
-        colorPrimary: '#00b96b',
-      },
-    }}
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#00b96b',
+        },
+      }}
     >
       <Layout>
-        <Layout.Sider />
-        <Layout>
+        <Layout.Sider theme={theme} collapsible>
+          <Menu items={[
+            {
+              key: 'chat',
+              title: '聊天',
+              label: '聊天',
+              icon: <MessageOutlined />,
+              onClick: () => navigate('/chat'),
+            },
+            {
+              key: 'contact',
+              title: '联系人',
+              label: '联系人',
+              icon: <UserOutlined />,
+              onClick: () => navigate('/contact'),
+            },
+            {
+              key: 'setting',
+              title: '设置',
+              label: '设置',
+              icon: <SettingOutlined />,
+              onClick: () => navigate('/setting'),
+            },
+          ]}
+          />
+        </Layout.Sider>
+        <Layout style={{ position: 'relative', height: '100vh' }}>
           <SplitPane {...splitPaneProps}>
-            <div>
-              <div>侧边</div>
-            </div>
+            <Sider />
             {props.children}
           </SplitPane>
         </Layout>
