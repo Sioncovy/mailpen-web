@@ -23,6 +23,9 @@ dependencies:
   axios-hooks:
     specifier: ^5.0.2
     version: 5.0.2(axios@1.6.7)(react@18.2.0)
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.10
   dotenv:
     specifier: ^16.4.1
     version: 16.4.1

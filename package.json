@@ -17,6 +17,7 @@
     "antd": "^5.14.0",
     "axios": "^1.6.7",
     "axios-hooks": "^5.0.2",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.4.1",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
