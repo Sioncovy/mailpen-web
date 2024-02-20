@@ -1,7 +1,7 @@
 import { ConfigProvider, Layout, Menu } from 'antd'
 import { MessageOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
 import { useAppStore, useSplitPane, useThemeToken } from '@/hooks'
 import { AUTH_TOKEN_KEY } from '@/config'
@@ -11,8 +11,11 @@ import Sider from '@/components/Sider'
 function MainLayout(props: any) {
   const { token } = useThemeToken()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [theme] = useAppStore(state => [state.theme])
   const [loading, setLoading] = useState(true)
+
+  const selectedKey = pathname.split('/')[1]
 
   useEffect(() => {
     setLoading(true)
@@ -44,32 +47,35 @@ function MainLayout(props: any) {
     >
       <Layout>
         <Layout.Sider theme={theme} collapsible>
-          <Menu items={[
-            {
-              key: 'chat',
-              title: '聊天',
-              label: '聊天',
-              icon: <MessageOutlined />,
-              onClick: () => navigate('/chat'),
-            },
-            {
-              key: 'contact',
-              title: '联系人',
-              label: '联系人',
-              icon: <UserOutlined />,
-              onClick: () => navigate('/contact'),
-            },
-            {
-              key: 'setting',
-              title: '设置',
-              label: '设置',
-              icon: <SettingOutlined />,
-              onClick: () => navigate('/setting'),
-            },
-          ]}
+          <Menu
+            selectedKeys={[selectedKey]}
+            style={{ height: '100%' }}
+            items={[
+              {
+                key: 'chat',
+                title: '聊天',
+                label: '聊天',
+                icon: <MessageOutlined />,
+                onClick: () => navigate('/chat'),
+              },
+              {
+                key: 'contact',
+                title: '联系人',
+                label: '联系人',
+                icon: <UserOutlined />,
+                onClick: () => navigate('/contact'),
+              },
+              {
+                key: 'setting',
+                title: '设置',
+                label: '设置',
+                icon: <SettingOutlined />,
+                onClick: () => navigate('/setting'),
+              },
+            ]}
           />
         </Layout.Sider>
-        <Layout style={{ position: 'relative', height: '100vh' }}>
+        <Layout style={{ position: 'relative', height: '100vh', backgroundColor: token.colorBgContainer }}>
           <SplitPane {...splitPaneProps}>
             <Sider />
             {props.children}
