@@ -4,6 +4,19 @@ import styles from './index.module.less'
 import ChatItem from './ChatItem'
 
 function ChatSider() {
+  const chats = [
+    {
+      id: 'test-chat',
+      avatar: 'https://avatars.githubusercontent.com/u/74760542?v=4',
+      nickname: 'Test User',
+      note: 'Test User',
+      sender: '',
+      count: 1,
+      createdAt: '2020-03-04',
+      updatedAt: '2024-02-24',
+      message: 'A sentence of message',
+    },
+  ]
   return (
     <div className={styles.sider}>
       <Flex className={styles.topBar} gap={8}>
@@ -11,16 +24,12 @@ function ChatSider() {
         <Button type="primary" icon={<PlusOutlined />} />
       </Flex>
       <div className={styles.list}>
-        <ChatItem chat={{
-          id: '1',
-          avatar: 'https://avatars.githubusercontent.com/u/74760542?v=4',
-          sender: '',
-          count: 1,
-          createdAt: '2020-03-04',
-          updatedAt: '2024-02-20',
-          message: '我好想你',
-        }}
-        />
+        {chats.map(chat => (
+          <ChatItem
+            key={chat.id}
+            chat={chat}
+          />
+        ))}
       </div>
     </div>
   )

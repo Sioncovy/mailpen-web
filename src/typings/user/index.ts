@@ -34,3 +34,15 @@ export interface User extends Common {
   username: string
   [property: string]: any
 }
+
+export interface Friend extends User {
+  /**
+   * 备注
+   */
+  note?: string
+  /**
+   * 好友分组
+   */
+  group?: string
+  [property: string]: any
+}

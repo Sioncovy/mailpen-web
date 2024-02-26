@@ -5,14 +5,15 @@ import SettingSider from './SettingSider'
 
 function Sider() {
   const { pathname } = useLocation()
+  const route = pathname.split('/')[1]
 
   const siderMap: { [key: string]: JSX.Element } = {
-    '/chat': <ChatSider />,
-    '/contact': <ContactSider />,
-    '/setting': <SettingSider />,
+    chat: <ChatSider />,
+    contact: <ContactSider />,
+    setting: <SettingSider />,
   }
 
-  return siderMap[pathname] || '什么都没有呢'
+  return siderMap[route] || '什么都没有呢'
 }
 
 export default Sider

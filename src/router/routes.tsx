@@ -25,15 +25,15 @@ const routes: RouteObject[] = [
         element: <Home />,
       },
       {
-        path: 'chat',
+        path: 'chat/:id',
         element: <Chat />,
       },
       {
-        path: 'contact',
+        path: 'contact/:id',
         element: <Contact />,
       },
       {
-        path: 'setting',
+        path: 'setting/:group',
         element: <Setting />,
       },
     ],

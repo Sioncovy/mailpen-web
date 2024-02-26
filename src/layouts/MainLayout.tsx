@@ -29,8 +29,8 @@ function MainLayout(props: any) {
     color: token.colorBorder,
     minSize: 160,
     dragMinSize: 160,
-    defaultSize: 200,
-    maxSize: 360,
+    defaultSize: 300,
+    maxSize: 500,
     key: 'main',
   })
 
