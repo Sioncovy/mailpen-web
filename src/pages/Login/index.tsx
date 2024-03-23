@@ -1,7 +1,8 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Card, Flex, Form, Input, message } from 'antd'
+import { Button, Card, Flex, Form, Input, Space, message } from 'antd'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import styles from './index.module.less'
 import { login } from '@/apis'
 import { AUTH_TOKEN_KEY } from '@/config'
 import { useAppStore, useThemeToken } from '@/hooks'
@@ -18,9 +19,12 @@ function Login() {
     <Flex vertical justify="center" align="center" style={{ height: '100vh' }}>
       {messageContext}
       <Card style={{ width: 400, boxShadow: token.boxShadow }}>
-        <div style={{ margin: 20, fontSize: 22 }}>
-          登录 Mailpen
-        </div>
+        <Space size={8} style={{ margin: '20px 0' }}>
+          <div className={styles.bar} />
+          <div style={{ fontSize: 22 }}>
+            登录 Mailpen
+          </div>
+        </Space>
         <Form<Pick<User, 'username' | 'password'>> onFinish={(values) => {
           setLoading(true)
           login(values).then((res) => {

@@ -1,8 +1,12 @@
-import React from 'react'
+import SettingSider from '@/components/Sider/SettingSider'
+import MainLayout from '@/layouts/MainLayout'
 
 function Setting() {
   return (
-    <div>Setting</div>
+    <MainLayout>
+      <SettingSider />
+      <div>设置</div>
+    </MainLayout>
   )
 }
 

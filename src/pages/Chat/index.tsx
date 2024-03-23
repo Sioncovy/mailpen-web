@@ -1,18 +1,16 @@
-import { Typography } from 'antd'
 import { useParams } from 'react-router-dom'
-import styles from './index.module.less'
-import type { Friend } from '@/typings'
+import ChatSider from '@/components/Sider/ChatSider'
+import MainLayout from '@/layouts/MainLayout'
 
 function Chat() {
   const params = useParams()
-  console.log('✨  ~ Chat ~ params:', params)
+  const chatId = params.id
 
   return (
-    <div>
-      <div className={styles.header}>
-        {/* <Typography.Text>{friend.note || friend.nickname}</Typography.Text> */}
-      </div>
-    </div>
+    <MainLayout>
+      <ChatSider />
+      <div>哈哈</div>
+    </MainLayout>
   )
 }
 

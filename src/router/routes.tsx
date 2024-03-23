@@ -1,13 +1,11 @@
-import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
-import MainLayout from '@/layouts/MainLayout'
-
-const Login = lazy(() => import('../pages/Login'))
-const Home = lazy(() => import('../pages/Home'))
-const Chat = lazy(() => import('../pages/Chat'))
-const Contact = lazy(() => import('../pages/Contact'))
-const Setting = lazy(() => import('../pages/Setting'))
+import MainLayout from '@/layouts/BasicLayout'
+import Chat from '@/pages/Chat'
+import Contact from '@/pages/Contact'
+import Home from '@/pages/Home'
+import Login from '@/pages/Login'
+import Setting from '@/pages/Setting'
 
 const routes: RouteObject[] = [
   {
@@ -25,16 +23,34 @@ const routes: RouteObject[] = [
         element: <Home />,
       },
       {
-        path: 'chat/:id',
+        path: 'chat',
         element: <Chat />,
+        children: [
+          {
+            path: ':id',
+            element: <Chat />,
+          },
+        ],
       },
       {
-        path: 'contact/:id',
+        path: 'contact',
         element: <Contact />,
+        children: [
+          {
+            path: ':id',
+            element: <Contact />,
+          },
+        ],
       },
       {
-        path: 'setting/:group',
+        path: 'setting',
         element: <Setting />,
+        children: [
+          {
+            path: ':group',
+            element: <Setting />,
+          },
+        ],
       },
     ],
   },
