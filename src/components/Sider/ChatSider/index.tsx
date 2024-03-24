@@ -6,7 +6,7 @@ import ChatItem from './ChatItem'
 function ChatSider() {
   const chats = [
     {
-      id: 'test-chat',
+      _id: 'test-chat',
       avatar: 'https://avatars.githubusercontent.com/u/74760542?v=4',
       nickname: 'Test User',
       note: 'Test User',
@@ -26,7 +26,7 @@ function ChatSider() {
       <div className={styles.list}>
         {chats.map(chat => (
           <ChatItem
-            key={chat.id}
+            key={chat._id}
             chat={chat}
           />
         ))}

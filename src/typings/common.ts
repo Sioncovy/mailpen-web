@@ -9,7 +9,7 @@ export interface Common {
   /**
    * id
    */
-  id: string
+  _id: string
   /**
    * 更新时间
    */
@@ -25,4 +25,11 @@ export enum Theme {
 export enum Language {
   Zh = 'zh',
   En = 'en',
+}
+
+export enum Status {
+  Success = 'success',
+  Error = 'error',
+  Warning = 'warning',
+  Info = 'info',
 }

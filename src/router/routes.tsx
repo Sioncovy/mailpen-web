@@ -6,6 +6,8 @@ import Contact from '@/pages/Contact'
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Setting from '@/pages/Setting'
+import ContactDetail from '@/pages/Contact/ContactDetail'
+import ContactSearch from '@/pages/Contact/ContactSearch'
 
 const routes: RouteObject[] = [
   {
@@ -34,11 +36,17 @@ const routes: RouteObject[] = [
       },
       {
         path: 'contact',
-        element: <Contact />,
+        element: <Contact>
+          <Outlet />
+        </Contact>,
         children: [
           {
             path: ':id',
-            element: <Contact />,
+            element: <ContactDetail />,
+          },
+          {
+            path: 'search',
+            element: <ContactSearch />,
           },
         ],
       },

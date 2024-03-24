@@ -1,10 +1,31 @@
 import { MessageOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import type { GlobalToken } from 'antd'
 import { ConfigProvider, Layout, Menu } from 'antd'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useAppStore } from '@/hooks'
+import { useAppStore, useThemeToken } from '@/hooks'
 import { AUTH_TOKEN_KEY } from '@/config'
 import Loading from '@/components/Loading'
+
+function AddThemeToVars() {
+  const { token: realToken } = useThemeToken()
+
+  useEffect(() => {
+    realToken.fontSizeSM = 12
+    const usefulToken = Object.keys(realToken).filter(_ => !/-[0-9]/.test(_))
+    usefulToken.forEach((key) => {
+      const needUnit = ['borderRadius', 'fontSize', 'size']
+      document.documentElement.style.setProperty(
+        `--${key}`,
+        needUnit.some(item => key.startsWith(item))
+          ? `${realToken[key as (keyof GlobalToken)]}px` as string
+          : realToken[key as (keyof GlobalToken)] as string,
+      )
+    })
+  }, [realToken])
+
+  return null
+}
 
 function BasicLayout(props: any) {
   const navigate = useNavigate()
@@ -33,6 +54,7 @@ function BasicLayout(props: any) {
         },
       }}
     >
+      <AddThemeToVars />
       <Layout style={{ height: '100vh' }}>
         <Layout.Sider theme={theme} collapsible>
           <Menu
