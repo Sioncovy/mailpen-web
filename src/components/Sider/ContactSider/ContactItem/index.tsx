@@ -1,9 +1,9 @@
-import { Badge, Flex, Typography } from 'antd'
+import { Flex, Typography } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useMeasure } from 'react-use'
 import styles from './index.module.less'
 import type { Contact } from '@/typings'
-import { useThemeToken, useTime } from '@/hooks'
+import { useThemeToken } from '@/hooks'
 
 interface ContactItemProps {
   contact: Contact
@@ -12,15 +12,15 @@ interface ContactItemProps {
 function ContactItem({ contact }: ContactItemProps) {
   const [ref, { width }] = useMeasure<HTMLDivElement>()
   const { token } = useThemeToken()
-  const time = useTime()
-  const { updatedAt, avatar, sender, count, note, nickname, message } = contact
+  const { remark } = contact
+  const { avatar, bio, nickname, username } = contact.friend
   const navigate = useNavigate()
 
   return (
     <Flex
       ref={ref}
       onClick={() => {
-        navigate(`/contact/${contact.id}`)
+        navigate(`/contact/${username}`)
       }}
       gap={10}
       className={styles.contactItem}
@@ -30,15 +30,14 @@ function ContactItem({ contact }: ContactItemProps) {
       </div>
       <Flex vertical style={{ width: width - 60 }} justify="space-between">
         <Flex justify="space-between" align="center">
-          <Typography.Text ellipsis style={{ fontSize: token.fontSizeLG }}>{note || nickname}</Typography.Text>
-          <Typography.Text type="secondary" style={{ fontSize: token.fontSizeSM, flexShrink: 0 }}>{time(updatedAt).fromNow()}</Typography.Text>
+          <Typography.Text ellipsis style={{ fontSize: token.fontSizeLG }}>
+            {remark ? `${remark}（${nickname}）` : nickname}
+          </Typography.Text>
         </Flex>
         <Flex justify="space-between" align="center">
           <Typography.Text ellipsis>
-            {sender ? `${sender}：` : ''}
-            {message}
+            {bio}
           </Typography.Text>
-          <Badge style={{ boxShadow: 'none' }} count={count} />
         </Flex>
       </Flex>
     </Flex>

@@ -14,7 +14,6 @@ export interface Common {
    * 更新时间
    */
   updatedAt: string
-  [property: string]: any
 }
 
 export enum Theme {

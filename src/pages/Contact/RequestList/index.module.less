@@ -1,0 +1,33 @@
+@import url("@/themes/index.less");
+
+.container {
+  width: 100%;
+  min-width: 600px;
+  height: 100%;
+  padding: 20px;
+  background-color: @colorBgLayout;
+
+  .requestItem {
+    width: 100%;
+    max-width: 900px;
+    height: 100px;
+    background-color: @colorBgContainer;
+    border-radius: @borderRadiusLG;
+
+    .avatar {
+      width: 60px;
+      height: 60px;
+      overflow: hidden;
+      border: 1px solid @colorBorder;
+      border-radius: 50%;
+    }
+
+    .nickname {
+      cursor: pointer;
+
+      &:hover {
+        color: @colorPrimaryHover
+      }
+    }
+  }
+}

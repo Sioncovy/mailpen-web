@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppStore, useThemeToken } from '@/hooks'
 import { AUTH_TOKEN_KEY } from '@/config'
 import Loading from '@/components/Loading'
+import { queryContactList, queryProfile } from '@/apis'
 
 function AddThemeToVars() {
   const { token: realToken } = useThemeToken()
@@ -30,7 +31,7 @@ function AddThemeToVars() {
 function BasicLayout(props: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const [theme] = useAppStore(state => [state.theme])
+  const [theme, setUserInfo, setContactList] = useAppStore(state => [state.theme, state.setUserInfo, state.setContactList])
   const [loading, setLoading] = useState(true)
 
   const selectedKey = pathname.split('/')[1]
@@ -38,9 +39,23 @@ function BasicLayout(props: any) {
   useEffect(() => {
     setLoading(true)
     const token = localStorage.getItem(AUTH_TOKEN_KEY)
-    if (!token)
+    if (!token) {
       navigate('/login', { replace: true })
-    setLoading(false)
+      setLoading(false)
+    }
+
+    queryProfile().then((res) => {
+      setUserInfo(res)
+    }).catch(() => {
+      navigate('/login', { replace: true })
+    }).finally(() => {
+      setLoading(false)
+    })
+
+    queryContactList().then((res) => {
+      if (res)
+        setContactList(res)
+    })
   }, [])
 
   if (loading)
@@ -50,7 +65,7 @@ function BasicLayout(props: any) {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#8090f0',
+          colorPrimary: '#118293',
         },
       }}
     >

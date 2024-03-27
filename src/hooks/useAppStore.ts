@@ -1,16 +1,18 @@
 import { create } from 'zustand'
-import type { User } from '@/typings'
+import type { Contact, UserPublic } from '@/typings'
 import { Language, Theme } from '@/typings'
 
 interface State {
   theme: Theme
   language: Language
-  userInfo: User
+  userInfo: UserPublic
+  contactList: Contact[]
 }
 
 interface Actions {
   setTheme: (theme: Theme) => void
-  setUserInfo: (userInfo: User) => void
+  setUserInfo: (userInfo: UserPublic) => void
+  setContactList: (contactList: Contact[]) => void
 }
 
 type Store = State & Actions
@@ -18,8 +20,10 @@ type Store = State & Actions
 export const useAppStore = create<Store>(set => ({
   theme: Theme.Light,
   language: Language.Zh,
-  userInfo: {} as User,
+  userInfo: {} as UserPublic,
+  contactList: [],
 
   setTheme: theme => set({ theme }),
   setUserInfo: userInfo => set({ userInfo }),
+  setContactList: contactList => set({ contactList }),
 }))

@@ -29,9 +29,9 @@ function Login() {
           setLoading(true)
           login(values).then((res) => {
             messageApi.success('登录成功')
-            if (res.data) {
-              localStorage.setItem(AUTH_TOKEN_KEY, res.data.token)
-              setUserInfo(res.data.userInfo)
+            if (res) {
+              localStorage.setItem(AUTH_TOKEN_KEY, res.access_token)
+              setUserInfo(res.userInfo)
               navigate('/')
             }
             setLoading(false)

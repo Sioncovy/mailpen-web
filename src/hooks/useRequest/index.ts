@@ -18,7 +18,10 @@ request.interceptors.request.use(
 )
 
 request.interceptors.response.use((config) => {
-  return config.data
+  if (config.data.code === 200)
+    return config.data.data
+  else
+    throw new Error(config.data.code)
 }, (error) => {
   return Promise.reject(error)
 })

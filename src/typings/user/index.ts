@@ -32,8 +32,9 @@ export interface User extends Common {
    * 用户名
    */
   username: string
-  [property: string]: any
 }
+
+export type UserPublic = Omit<User, 'password'>
 
 export interface Friend extends User {
   /**
@@ -44,5 +45,4 @@ export interface Friend extends User {
    * 好友分组
    */
   group?: string
-  [property: string]: any
 }

@@ -19,7 +19,7 @@ function ChatItem({ chat }: ChatItemProps) {
     <Flex
       ref={ref}
       onClick={() => {
-        navigate(`/chat/${chat.id}`)
+        navigate(`/chat/${chat._id}`)
       }}
       style={{ backgroundColor: token.colorPrimary, padding: 10 }}
       gap={10}

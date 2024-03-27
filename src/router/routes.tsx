@@ -8,6 +8,7 @@ import Login from '@/pages/Login'
 import Setting from '@/pages/Setting'
 import ContactDetail from '@/pages/Contact/ContactDetail'
 import ContactSearch from '@/pages/Contact/ContactSearch'
+import RequestList from '@/pages/Contact/RequestList'
 
 const routes: RouteObject[] = [
   {
@@ -41,12 +42,16 @@ const routes: RouteObject[] = [
         </Contact>,
         children: [
           {
-            path: ':id',
+            path: ':username',
             element: <ContactDetail />,
           },
           {
             path: 'search',
             element: <ContactSearch />,
+          },
+          {
+            path: 'request',
+            element: <RequestList />,
           },
         ],
       },
