@@ -5,6 +5,7 @@ import styles from './index.module.less'
 import type { UserPublic } from '@/typings'
 import { useAppStore, useThemeToken } from '@/hooks'
 import { createRequest } from '@/apis'
+import { mailpenDatabase } from '@/storages'
 
 interface UserInfoProps {
   user: UserPublic
@@ -16,7 +17,7 @@ function UserInfo(props: UserInfoProps) {
   const [contactList, userInfo] = useAppStore(state => [state.contactList, state.userInfo])
   const [user, setUser] = useState<UserPublic | undefined>(props.user)
   const { token } = useThemeToken()
-  const isFriend = contactList.some(contact => contact._id === userInfo._id)
+  const friend = contactList.find(contact => contact._id === userInfo._id)
   const [messageApi, messageContextHolder] = message.useMessage()
 
   useEffect(() => {
@@ -45,8 +46,20 @@ function UserInfo(props: UserInfoProps) {
           <Flex>
             <Button
               block
-              onClick={() => {
-                if (isFriend) {
+              onClick={async () => {
+                if (friend) {
+                  const chat = await mailpenDatabase.chats.findOne({ selector: { _id: username } }).exec()
+                  if (!chat) {
+                    await mailpenDatabase.chats.insert({
+                      _id: username,
+                      name: friend.remark || friend.nickname || friend.username,
+                      avatar: friend.avatar,
+                      message: null,
+                      count: 0,
+                      createdAt: new Date().toISOString(),
+                      updatedAt: new Date().toISOString(),
+                    })
+                  }
                   navigate(`/chat/${username}`)
                 }
                 else {
@@ -58,7 +71,7 @@ function UserInfo(props: UserInfoProps) {
                 }
               }}
             >
-              {isFriend ? '去聊天' : '添加好友'}
+              {friend ? '去聊天' : '添加好友'}
             </Button>
           </Flex>
         </Flex>

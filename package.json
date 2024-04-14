@@ -12,11 +12,9 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.0",
-    "@ant-design/pro-chat": "^1.12.2",
     "@types/qs": "^6.9.11",
     "ahooks": "^3.7.10",
     "antd": "^5.14.0",
-    "antd-style": "^3.6.2",
     "axios": "^1.6.7",
     "axios-hooks": "^5.0.2",
     "dayjs": "^1.11.10",

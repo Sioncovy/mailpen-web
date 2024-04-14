@@ -45,7 +45,6 @@ function ContactInfo(props: ContactInfoProps) {
               block
               onClick={async () => {
                 const chat = await mailpenDatabase.chats.findOne({ selector: { _id: username } }).exec()
-                console.log('✨  ~ onClick={ ~ chat:', chat)
                 if (!chat) {
                   await mailpenDatabase.chats.insert({
                     _id: username,
