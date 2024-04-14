@@ -13,13 +13,13 @@ function ContactItem({ contact }: ContactItemProps) {
   const [ref, { width }] = useMeasure<HTMLDivElement>()
   const { token } = useThemeToken()
   const { remark } = contact
-  const { avatar, bio, nickname, username } = contact.friend
+  const { avatar, bio, nickname, username } = contact
   const navigate = useNavigate()
 
   return (
     <Flex
       ref={ref}
-      onClick={() => {
+      onClick={async () => {
         navigate(`/contact/${username}`)
       }}
       gap={10}

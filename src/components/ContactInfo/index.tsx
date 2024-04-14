@@ -2,17 +2,17 @@ import { Button, Card, Flex, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styles from './index.module.less'
-import type { UserPublic } from '@/typings'
+import type { Contact } from '@/typings'
+import { mailpenDatabase } from '@/storages'
 import { useThemeToken } from '@/hooks'
-import { createRequest } from '@/apis'
 
 interface ContactInfoProps {
-  contact: UserPublic
+  contact: Contact
 }
 
 function ContactInfo(props: ContactInfoProps) {
   const { username } = useParams()
-  const [contact, setContact] = useState<UserPublic | undefined>(props.contact)
+  const [contact, setContact] = useState<Contact | undefined>(props.contact)
   const { token } = useThemeToken()
   const navigate = useNavigate()
 
@@ -43,7 +43,20 @@ function ContactInfo(props: ContactInfoProps) {
           <Flex>
             <Button
               block
-              onClick={() => {
+              onClick={async () => {
+                const chat = await mailpenDatabase.chats.findOne({ selector: { _id: username } }).exec()
+                console.log('✨  ~ onClick={ ~ chat:', chat)
+                if (!chat) {
+                  await mailpenDatabase.chats.insert({
+                    _id: username,
+                    name: contact.remark || contact.nickname || contact.username,
+                    avatar: contact.avatar,
+                    message: null,
+                    count: 0,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  })
+                }
                 navigate(`/chat/${username}`)
               }}
             >

@@ -11,19 +11,16 @@ export enum FriendStatus {
   Blocked = 'blocked',
 }
 
-export interface Request extends Common {
-  user: UserPublic
-  friend: UserPublic
+export interface Request extends Common, UserPublic {
   status: FriendRequestStatus
   reason?: string
 }
 
-export interface Contact extends Common {
-  user: UserPublic
-  friend: UserPublic
+export interface Contact extends UserPublic {
   // 好友状态
   status: FriendStatus
   // 好友申请记录
   request: Request
+  // 备注
   remark?: string
 }

@@ -2,7 +2,7 @@ import { Badge, Flex, Typography } from 'antd'
 import { useMeasure } from 'react-use'
 import { useNavigate } from 'react-router-dom'
 import { useThemeToken, useTime } from '@/hooks'
-import type { Chat } from '@/typings'
+import type { Chat, Message } from '@/typings'
 
 interface ChatItemProps {
   chat: Chat
@@ -12,7 +12,8 @@ function ChatItem({ chat }: ChatItemProps) {
   const [ref, { width }] = useMeasure<HTMLDivElement>()
   const { token } = useThemeToken()
   const time = useTime()
-  const { updatedAt, avatar, sender, count, note, nickname, message } = chat
+  const { updatedAt, avatar, count, name, message } = chat
+  const { sender, content } = message || {} as Message
   const navigate = useNavigate()
 
   return (
@@ -29,13 +30,13 @@ function ChatItem({ chat }: ChatItemProps) {
       </div>
       <Flex vertical style={{ width: width - 60 }} justify="space-between">
         <Flex justify="space-between" align="center">
-          <Typography.Text ellipsis style={{ fontSize: token.fontSizeLG }}>{note || nickname}</Typography.Text>
+          <Typography.Text ellipsis style={{ fontSize: token.fontSizeLG }}>{name}</Typography.Text>
           <Typography.Text type="secondary" style={{ fontSize: token.fontSizeSM, flexShrink: 0 }}>{time(updatedAt).fromNow()}</Typography.Text>
         </Flex>
         <Flex justify="space-between" align="center">
           <Typography.Text ellipsis>
             {sender ? `${sender}：` : ''}
-            {message}
+            {content}
           </Typography.Text>
           <Badge style={{ boxShadow: 'none' }} count={count} />
         </Flex>
