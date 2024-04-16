@@ -14,10 +14,10 @@ interface UserInfoProps {
 function UserInfo(props: UserInfoProps) {
   const navigate = useNavigate()
   const { username } = useParams()
-  const [contactList, userInfo] = useAppStore(state => [state.contactList, state.userInfo])
-  const [user, setUser] = useState<UserPublic | undefined>(props.user)
+  const [contactMap, userInfo] = useAppStore(state => [state.contactMap, state.userInfo])
+  const [user, setUser] = useState<UserPublic>(props.user)
   const { token } = useThemeToken()
-  const friend = contactList.find(contact => contact._id === userInfo._id)
+  const friend = contactMap.get(userInfo._id)
   const [messageApi, messageContextHolder] = message.useMessage()
 
   useEffect(() => {
@@ -47,7 +47,7 @@ function UserInfo(props: UserInfoProps) {
             <Button
               block
               onClick={async () => {
-                if (friend) {
+                if (friend && username) {
                   const chat = await mailpenDatabase.chats.findOne({ selector: { _id: username } }).exec()
                   if (!chat) {
                     await mailpenDatabase.chats.insert({

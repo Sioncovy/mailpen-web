@@ -1,7 +1,7 @@
 import type { RouteObject } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
 import MainLayout from '@/layouts/BasicLayout'
-import ChatPage from '@/pages/Chat'
+import ChatPage from '@/pages/ChatPage'
 import Contact from '@/pages/Contact'
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
@@ -30,7 +30,7 @@ const routes: RouteObject[] = [
         element: <ChatPage />,
         children: [
           {
-            path: ':id',
+            path: ':username',
             element: <ChatPage />,
           },
         ],

@@ -1,9 +1,22 @@
-import type { RxJsonSchema } from 'rxdb'
-import { createRxDatabase } from 'rxdb'
+import type { RxCollection, RxDatabase, RxJsonSchema } from 'rxdb'
+import { addRxPlugin, createRxDatabase } from 'rxdb'
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie'
+import { RxDBUpdatePlugin } from 'rxdb/plugins/update'
+import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder'
 import type { Chat, Message } from '@/typings'
 
-export const mailpenDatabase = await createRxDatabase({
+addRxPlugin(RxDBQueryBuilderPlugin)
+addRxPlugin(RxDBUpdatePlugin)
+
+type ChatCollection = RxCollection<Chat>
+type MessageCollection = RxCollection<Message>
+
+interface MailpenDatabaseCollections {
+  chats: ChatCollection
+  messages: MessageCollection
+}
+
+export const mailpenDatabase = await createRxDatabase<RxDatabase<MailpenDatabaseCollections>>({
   name: 'mailpen',
   storage: getRxStorageDexie(),
 })
@@ -75,7 +88,7 @@ const messageSchema: RxJsonSchema<Message> = {
     },
   },
   required: ['_id', 'content', 'type', 'sender', 'receiver', 'read', 'createdAt', 'updatedAt'],
-}
+} as const
 
 await mailpenDatabase.addCollections({
   chats: {

@@ -1,4 +1,4 @@
-import type { Common, Contact } from '..'
+import type { Common } from '..'
 
 export enum ChatMessageType {
   Text,
@@ -18,7 +18,7 @@ export interface Chat extends Common {
 export interface Message extends Common {
   content: string
   type: ChatMessageType
-  sender: Contact
+  sender: string
   receiver: string
   read: boolean
 }

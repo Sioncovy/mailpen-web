@@ -7,7 +7,7 @@ export interface User extends Common {
   /**
    * 头像
    */
-  avatar?: string
+  avatar: string
   /**
    * 个人简介
    */

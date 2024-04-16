@@ -1,8 +1,9 @@
 import { Badge, Flex, Typography } from 'antd'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useMeasure } from 'react-use'
-import { useNavigate } from 'react-router-dom'
-import { useThemeToken, useTime } from '@/hooks'
+import styles from './index.module.less'
 import type { Chat, Message } from '@/typings'
+import { useThemeToken, useTime } from '@/hooks'
 
 interface ChatItemProps {
   chat: Chat
@@ -13,8 +14,10 @@ function ChatItem({ chat }: ChatItemProps) {
   const { token } = useThemeToken()
   const time = useTime()
   const { updatedAt, avatar, count, name, message } = chat
-  const { sender, content } = message || {} as Message
+  const { content } = message || {} as Message
   const navigate = useNavigate()
+  const { username } = useParams()
+  const isActive = username === chat._id
 
   return (
     <Flex
@@ -22,7 +25,8 @@ function ChatItem({ chat }: ChatItemProps) {
       onClick={() => {
         navigate(`/chat/${chat._id}`)
       }}
-      style={{ backgroundColor: token.colorPrimary, padding: 10 }}
+      className={styles.chatItem}
+      style={{ backgroundColor: isActive ? token.colorPrimaryActive : undefined, padding: 10 }}
       gap={10}
     >
       <div style={{ minWidth: 50, height: 50, borderRadius: '50%', overflow: 'hidden' }}>
@@ -35,7 +39,6 @@ function ChatItem({ chat }: ChatItemProps) {
         </Flex>
         <Flex justify="space-between" align="center">
           <Typography.Text ellipsis>
-            {sender ? `${sender}：` : ''}
             {content}
           </Typography.Text>
           <Badge style={{ boxShadow: 'none' }} count={count} />

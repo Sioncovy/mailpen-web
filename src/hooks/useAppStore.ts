@@ -7,6 +7,7 @@ interface State {
   language: Language
   userInfo: UserPublic
   contactList: Contact[]
+  contactMap: Map<string, Contact>
 }
 
 interface Actions {
@@ -22,8 +23,13 @@ export const useAppStore = create<Store>(set => ({
   language: Language.Zh,
   userInfo: {} as UserPublic,
   contactList: [],
+  contactMap: new Map(),
 
   setTheme: theme => set({ theme }),
   setUserInfo: userInfo => set({ userInfo }),
-  setContactList: contactList => set({ contactList }),
+  setContactList: (contactList) => {
+    const contactMap = new Map<string, Contact>()
+    contactList.forEach(contact => contactMap.set(contact._id, contact))
+    set({ contactList, contactMap })
+  },
 }))

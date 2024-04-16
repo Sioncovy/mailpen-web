@@ -3,7 +3,7 @@ import type { GlobalToken } from 'antd'
 import { ConfigProvider, Layout, Menu } from 'antd'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useAppStore, useThemeToken } from '@/hooks'
+import { socket, useAppStore, useThemeToken } from '@/hooks'
 import { AUTH_TOKEN_KEY } from '@/config'
 import Loading from '@/components/Loading'
 import { queryContactList, queryProfile } from '@/apis'
@@ -46,6 +46,9 @@ function BasicLayout(props: any) {
 
     queryProfile().then((res) => {
       setUserInfo(res)
+      socket.emit('login', {
+        id: res._id,
+      })
     }).catch(() => {
       navigate('/login', { replace: true })
     }).finally(() => {
@@ -65,7 +68,7 @@ function BasicLayout(props: any) {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#118293',
+          colorPrimary: '#bde0fe',
         },
       }}
     >
