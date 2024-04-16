@@ -5,7 +5,7 @@ import ChatPage from '@/pages/ChatPage'
 import Contact from '@/pages/Contact'
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
-import Setting from '@/pages/Setting'
+import Setting from '@/pages/SettingPage'
 import ContactDetail from '@/pages/Contact/ContactDetail'
 import ContactSearch from '@/pages/Contact/ContactSearch'
 import RequestList from '@/pages/Contact/RequestList'
@@ -60,8 +60,8 @@ const routes: RouteObject[] = [
         element: <Setting />,
         children: [
           {
-            path: ':group',
-            element: <Setting />,
+            path: ':name',
+            index: true,
           },
         ],
       },

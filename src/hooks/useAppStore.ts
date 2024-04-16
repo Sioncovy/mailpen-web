@@ -1,4 +1,6 @@
 import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 import type { Contact, UserPublic } from '@/typings'
 import { Language, Theme } from '@/typings'
 
@@ -18,7 +20,7 @@ interface Actions {
 
 type Store = State & Actions
 
-export const useAppStore = create<Store>(set => ({
+export const useAppStore = create(persist(immer<Store>(set => ({
   theme: Theme.Light,
   language: Language.Zh,
   userInfo: {} as UserPublic,
@@ -31,5 +33,14 @@ export const useAppStore = create<Store>(set => ({
     const contactMap = new Map<string, Contact>()
     contactList.forEach(contact => contactMap.set(contact._id, contact))
     set({ contactList, contactMap })
+  },
+})), {
+  name: 'app-store',
+  storage: createJSONStorage(() => localStorage),
+  partialize(state) {
+    return {
+      theme: state.theme,
+      language: state.language,
+    }
   },
 }))

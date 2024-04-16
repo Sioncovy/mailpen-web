@@ -35,6 +35,7 @@ function ChatPage() {
           count: 1,
           createdAt: now,
           updatedAt: now,
+          pinned: false,
         })
       }
       else {

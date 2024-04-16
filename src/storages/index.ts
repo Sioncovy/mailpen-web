@@ -3,8 +3,10 @@ import { addRxPlugin, createRxDatabase } from 'rxdb'
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie'
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update'
 import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder'
+import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode'
 import type { Chat, Message } from '@/typings'
 
+addRxPlugin(RxDBDevModePlugin)
 addRxPlugin(RxDBQueryBuilderPlugin)
 addRxPlugin(RxDBUpdatePlugin)
 
@@ -50,9 +52,12 @@ const chatSchema: RxJsonSchema<Chat> = {
       type: 'string',
       format: 'date-time',
     },
+    pinned: {
+      type: 'boolean',
+    },
   },
-  required: ['_id', 'name', 'avatar', 'message', 'count', 'createdAt', 'updatedAt'],
-}
+  required: ['_id', 'name', 'avatar', 'message', 'count', 'createdAt', 'updatedAt', 'pinned'],
+} as const
 
 const messageSchema: RxJsonSchema<Message> = {
   version: 0,

@@ -1,12 +1,13 @@
 import { MessageOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 import type { GlobalToken } from 'antd'
-import { ConfigProvider, Layout, Menu } from 'antd'
+import { ConfigProvider, Layout, Menu, theme as themeAntd } from 'antd'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { socket, useAppStore, useThemeToken } from '@/hooks'
 import { AUTH_TOKEN_KEY } from '@/config'
 import Loading from '@/components/Loading'
 import { queryContactList, queryProfile } from '@/apis'
+import { Theme } from '@/typings'
 
 function AddThemeToVars() {
   const { token: realToken } = useThemeToken()
@@ -70,6 +71,7 @@ function BasicLayout(props: any) {
         token: {
           colorPrimary: '#bde0fe',
         },
+        algorithm: theme === Theme.Light ? themeAntd.defaultAlgorithm : themeAntd.darkAlgorithm,
       }}
     >
       <AddThemeToVars />

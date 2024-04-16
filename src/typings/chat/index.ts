@@ -13,6 +13,7 @@ export interface Chat extends Common {
   avatar: string
   message: Message | null
   count: number
+  pinned: boolean
 }
 
 export interface Message extends Common {

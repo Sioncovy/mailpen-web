@@ -45,7 +45,7 @@ function ContactInfo(props: ContactInfoProps) {
               block
               onClick={async () => {
                 const chat = await mailpenDatabase.chats.findOne({ selector: { _id: username } }).exec()
-                if (!chat) {
+                if (!chat && username) {
                   await mailpenDatabase.chats.insert({
                     _id: username,
                     name: contact.remark || contact.nickname || contact.username,
@@ -54,6 +54,7 @@ function ContactInfo(props: ContactInfoProps) {
                     count: 0,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
+                    pinned: false,
                   })
                 }
                 navigate(`/chat/${username}`)
