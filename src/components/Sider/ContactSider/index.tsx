@@ -1,5 +1,5 @@
 import { PlusOutlined, RightOutlined } from '@ant-design/icons'
-import { Button, Divider, Flex, Input, Segmented } from 'antd'
+import { Button, Divider, Flex, Input, Segmented, Typography } from 'antd'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ContactItem from './ContactItem'
@@ -34,11 +34,11 @@ function ContactSider() {
             navigate('/contact/request')
           }}
         >
-          <div>好友通知</div>
+          <Typography.Text>好友通知</Typography.Text>
           <RightOutlined />
         </Flex>
         <Flex className={styles.notifyItem} flex={1} justify="space-between">
-          <div>群聊通知</div>
+          <Typography.Text>群聊通知</Typography.Text>
           <RightOutlined />
         </Flex>
       </Flex>

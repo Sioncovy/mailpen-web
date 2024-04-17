@@ -40,7 +40,7 @@ function RequestList() {
                     <Typography.Text className={styles.nickname} style={{ fontWeight: 'bold', color: token.colorPrimary }}>
                       {friend.nickname}
                     </Typography.Text>
-                    {isSelf ? (<span>正在验证你的邀请</span>) : (<span>请求添加为好友</span>)}
+                    {isSelf ? (<Typography.Text>正在验证你的邀请</Typography.Text>) : (<Typography.Text>请求添加为好友</Typography.Text>)}
                     <Typography.Text type="secondary" style={{ textAlign: 'center' }}>
                       {time(request.createdAt).format('YYYY-MM-DD')}
                     </Typography.Text>
@@ -52,7 +52,7 @@ function RequestList() {
                 </Flex>
               </Flex>
               <Flex align="center">
-                {isSelf && request.status === FriendRequestStatus.Pending && (<span>等待验证</span>)}
+                {isSelf && request.status === FriendRequestStatus.Pending && (<Typography.Text>等待验证</Typography.Text>)}
                 {!isSelf && request.status === FriendRequestStatus.Pending && ((
                   <Dropdown.Button
                     trigger={['click']}
@@ -84,8 +84,8 @@ function RequestList() {
                     同意
                   </Dropdown.Button>
                 ))}
-                {request.status === FriendRequestStatus.Accepted && (<span>已同意</span>)}
-                {request.status === FriendRequestStatus.Rejected && (<span>已拒绝</span>)}
+                {request.status === FriendRequestStatus.Accepted && (<Typography.Text>已同意</Typography.Text>)}
+                {request.status === FriendRequestStatus.Rejected && (<Typography.Text>已拒绝</Typography.Text>)}
               </Flex>
             </Flex>
           )

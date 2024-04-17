@@ -12,6 +12,8 @@ export enum FriendStatus {
 }
 
 export interface Request extends Common, UserPublic {
+  user: UserPublic
+  friend: UserPublic
   status: FriendRequestStatus
   reason?: string
 }

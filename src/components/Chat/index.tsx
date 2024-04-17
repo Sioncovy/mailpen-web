@@ -67,7 +67,7 @@ function Chat({ chat }: ChatProps) {
         </Flex>
       </Flex>
       <Divider style={{ margin: 0 }} />
-      <Flex flex={1} vertical style={{ padding: token.padding, overflow: 'auto', display: 'flex' }}>
+      <Flex flex={1} gap={8} vertical style={{ padding: token.padding, overflow: 'auto', display: 'flex' }}>
         {messageList.map((message) => {
           const isSelf = message.sender === user._id
           const info = isSelf ? user : friend

@@ -35,11 +35,11 @@ function Message({ message: { name, avatar, content, createdAt, updatedAt, posit
           <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
         </Card>
         <Flex gap={4} align="center" style={{ flexDirection }}>
-          <Typography.Text type="secondary">{read ? '已读' : '未读'}</Typography.Text>
+          <Typography.Text style={{ fontSize: 12 }} type="secondary">{read ? '已读' : '未读'}</Typography.Text>
           <Flex gap={4} align="center" className={styles.extraInfo} style={{ flexDirection }}>
-            {isEdited && <Typography.Text type="secondary">已编辑</Typography.Text>}
+            {isEdited && <Typography.Text style={{ fontSize: 12 }} type="secondary">已编辑</Typography.Text>}
             <Tooltip placement="bottom" title={time(createdAt).format('YYYY-MM-DD HH:mm:ss')}>
-              <Typography.Text type="secondary">{time(createdAt).fromNow()}</Typography.Text>
+              <Typography.Text style={{ fontSize: 12 }} type="secondary">{time(createdAt).fromNow()}</Typography.Text>
             </Tooltip>
           </Flex>
         </Flex>
