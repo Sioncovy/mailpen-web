@@ -1,9 +1,11 @@
-import { SmileOutlined } from '@ant-design/icons'
-import { Button, Flex, Input, Popover } from 'antd'
+import { FileImageOutlined, SmileOutlined } from '@ant-design/icons'
+import { Button, Flex, Image, Input, Modal, Popover, Upload } from 'antd'
 import { useState } from 'react'
-import { socket } from '@/hooks'
+import { uploadFile } from '@/apis'
 import EmojiPicker from '@/components/EmojiPicker'
+import { socket, useThemeToken } from '@/hooks'
 import { ChatMessageType } from '@/typings'
+import { createObjectURL } from '@/utils'
 
 interface InputAreaProps {
   userId: string
@@ -13,10 +15,13 @@ interface InputAreaProps {
 function InputArea({ userId, friendId }: InputAreaProps) {
   const [content, setContent] = useState<string>('')
   const [emojiOpen, setEmojiOpen] = useState<boolean>(false)
+  const [useModal, modalContext] = Modal.useModal()
+  const { token } = useThemeToken()
 
   return (
     <Flex vertical>
-      <Flex>
+      {modalContext}
+      <Flex gap={4} style={{ margin: `${token.paddingXS}px 0` }}>
         <Popover
           open={emojiOpen}
           onOpenChange={setEmojiOpen}
@@ -37,6 +42,30 @@ function InputArea({ userId, friendId }: InputAreaProps) {
             }}
           />
         </Popover>
+        <Upload
+          showUploadList={false}
+          beforeUpload={(file) => {
+            const url = createObjectURL(file)
+            useModal.confirm({
+              title: '确认发送？',
+              content: <Image src={url} />,
+              onOk: async () => {
+                const res = await uploadFile(file)
+                socket.emit('sendChatMessage', { content: res.url, sender: userId, receiver: friendId, type: ChatMessageType.Image })
+                URL.revokeObjectURL(url)
+              },
+              onCancel: () => {
+                URL.revokeObjectURL(url)
+              },
+            })
+            return false
+          }}
+        >
+          <Button
+            type="text"
+            icon={<FileImageOutlined />}
+          />
+        </Upload>
       </Flex>
       <Input.TextArea
         value={content}

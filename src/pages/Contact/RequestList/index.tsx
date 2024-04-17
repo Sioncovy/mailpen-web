@@ -33,12 +33,12 @@ function RequestList() {
             >
               <Flex gap={20} flex={1}>
                 <div className={styles.avatar}>
-                  <img src={friend.avatar} alt={`${friend.nickname}头像`} />
+                  <img src={friend.avatar} alt={`${friend.nickname || friend.username}头像`} />
                 </div>
                 <Flex vertical gap={8} justify="center">
                   <Flex gap={4} align="center">
                     <Typography.Text className={styles.nickname} style={{ fontWeight: 'bold', color: token.colorPrimary }}>
-                      {friend.nickname}
+                      {friend.nickname || friend.username}
                     </Typography.Text>
                     {isSelf ? (<Typography.Text>正在验证你的邀请</Typography.Text>) : (<Typography.Text>请求添加为好友</Typography.Text>)}
                     <Typography.Text type="secondary" style={{ textAlign: 'center' }}>

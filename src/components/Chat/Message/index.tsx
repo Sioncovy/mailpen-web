@@ -1,9 +1,9 @@
-import { Card, Flex, Tooltip, Typography } from 'antd'
+import { Card, Flex, Image, Tooltip, Typography } from 'antd'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import styles from './index.module.less'
 import { useTime } from '@/hooks'
-import type { ChatMessageType } from '@/typings'
+import { ChatMessageType } from '@/typings'
 
 interface MessageProps {
   message: {
@@ -18,21 +18,35 @@ interface MessageProps {
   }
 }
 
-function Message({ message: { name, avatar, content, createdAt, updatedAt, position = 'left', read } }: MessageProps) {
+function Message({ message: { name, avatar, content, createdAt, updatedAt, position = 'left', read, type } }: MessageProps) {
   const time = useTime()
   const isEdited = createdAt.getTime() !== updatedAt.getTime()
   const isLeft = position === 'left'
   const flexDirection = isLeft ? 'row' : 'row-reverse'
 
+  const contentRender = () => {
+    switch (Number(type)) {
+      case ChatMessageType.Text: {
+        return <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+      }
+      case ChatMessageType.Image: {
+        return <Image src={content} />
+      }
+      default: {
+        return <Typography.Text type="danger">消息异常</Typography.Text>
+      }
+    }
+  }
+
   return (
-    <Flex gap={8} style={{ height: 'auto', flexDirection }} className={styles.message}>
+    <Flex gap={8} style={{ height: 'auto', flexDirection, maxWidth: '70%' }} className={styles.message}>
       <div style={{ minWidth: 40, height: 40, borderRadius: '50%', overflow: 'hidden' }}>
-        <img src={avatar} />
+        <img style={{ height: '100%' }} src={avatar} />
       </div>
       <Flex vertical>
         <div>{name}</div>
         <Card size="small" style={{ width: 'fit-content', alignSelf: isLeft ? 'flex-start' : 'flex-end' }}>
-          <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+          {contentRender()}
         </Card>
         <Flex gap={4} align="center" style={{ flexDirection }}>
           <Typography.Text style={{ fontSize: 12 }} type="secondary">{read ? '已读' : '未读'}</Typography.Text>

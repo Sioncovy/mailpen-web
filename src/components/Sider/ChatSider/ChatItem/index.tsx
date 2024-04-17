@@ -2,7 +2,7 @@ import { Badge, Dropdown, Flex, Modal, Typography } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMeasure } from 'react-use'
 import styles from './index.module.less'
-import type { Chat, Message } from '@/typings'
+import { type Chat, ChatMessageType, type Message } from '@/typings'
 import { useThemeToken, useTime } from '@/hooks'
 import { mailpenDatabase } from '@/storages'
 
@@ -16,10 +16,24 @@ function ChatItem({ chat }: ChatItemProps) {
   const { token } = useThemeToken()
   const time = useTime()
   const { updatedAt, avatar, count, name, message, pinned } = chat
-  const { content } = message || {} as Message
+  const { content, type } = message || {} as Message
   const navigate = useNavigate()
   const { username } = useParams()
   const isActive = username === chat._id
+
+  const contentRender = () => {
+    switch (Number(type)) {
+      case ChatMessageType.Text: {
+        return content
+      }
+      case ChatMessageType.Image: {
+        return '[图片]'
+      }
+      case ChatMessageType.File: {
+        return '[文件]'
+      }
+    }
+  }
 
   return (
     <>
@@ -74,7 +88,7 @@ function ChatItem({ chat }: ChatItemProps) {
           gap={10}
         >
           <div style={{ minWidth: 50, height: 50, borderRadius: '50%', overflow: 'hidden' }}>
-            <img src={avatar} />
+            <img style={{ height: '100%' }} src={avatar} />
           </div>
           <Flex vertical style={{ width: width - 60 }} justify="space-between">
             <Flex justify="space-between" align="center">
@@ -83,7 +97,7 @@ function ChatItem({ chat }: ChatItemProps) {
             </Flex>
             <Flex justify="space-between" align="center">
               <Typography.Text ellipsis>
-                {content}
+                {contentRender()}
               </Typography.Text>
               <Badge style={{ boxShadow: 'none' }} count={count} />
             </Flex>

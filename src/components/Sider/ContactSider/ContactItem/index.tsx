@@ -1,5 +1,5 @@
 import { Flex, Typography } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useMeasure } from 'react-use'
 import styles from './index.module.less'
 import type { Contact } from '@/typings'
@@ -15,6 +15,7 @@ function ContactItem({ contact }: ContactItemProps) {
   const { remark } = contact
   const { avatar, bio, nickname, username } = contact
   const navigate = useNavigate()
+  const { username: routeUsername } = useParams()
 
   return (
     <Flex
@@ -22,6 +23,7 @@ function ContactItem({ contact }: ContactItemProps) {
       onClick={async () => {
         navigate(`/contact/${username}`)
       }}
+      style={{ backgroundColor: routeUsername === username ? token.colorPrimaryActive : undefined }}
       gap={10}
       className={styles.contactItem}
     >
@@ -31,7 +33,7 @@ function ContactItem({ contact }: ContactItemProps) {
       <Flex vertical style={{ width: width - 60 }} justify="space-between">
         <Flex justify="space-between" align="center">
           <Typography.Text ellipsis style={{ fontSize: token.fontSizeLG }}>
-            {remark ? `${remark}（${nickname}）` : nickname}
+            {remark ? `${remark}（${nickname || username}）` : nickname || username}
           </Typography.Text>
         </Flex>
         <Flex justify="space-between" align="center">

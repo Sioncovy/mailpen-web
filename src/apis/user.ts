@@ -10,7 +10,8 @@ export async function queryUserInfo(username: string): Promise<UserPublic> {
 }
 
 export async function login(data: Pick<User, 'username' | 'password'>): Promise<{
-  access_token: string
+  accessToken: string
+  // uploadToken: string
   userInfo: UserPublic
 }> {
   return request.post('/users/login', data)

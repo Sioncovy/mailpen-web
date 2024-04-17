@@ -58,7 +58,7 @@ function Chat({ chat }: ChatProps) {
       <Flex style={{ padding: token.padding }}>
         <Flex align="center" gap={8}>
           <div style={{ minWidth: 50, height: 50, borderRadius: '50%', overflow: 'hidden' }}>
-            <img src={chat.avatar} />
+            <img style={{ height: '100%' }} src={chat.avatar} />
           </div>
           <Flex vertical gap={2}>
             <Typography.Text style={{ fontSize: token.fontSizeLG, fontWeight: 'bold' }}>{chat.name}</Typography.Text>

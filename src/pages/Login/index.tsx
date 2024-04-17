@@ -3,10 +3,10 @@ import { Button, Card, Flex, Form, Input, Space, message } from 'antd'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './index.module.less'
-import { login } from '@/apis'
-import { AUTH_TOKEN_KEY } from '@/config'
-import { useAppStore, useThemeToken } from '@/hooks'
 import type { User } from '@/typings'
+import { useAppStore, useThemeToken } from '@/hooks'
+import { AUTH_TOKEN_KEY } from '@/config'
+import { login } from '@/apis'
 
 function Login() {
   const [loading, setLoading] = useState(false)
@@ -38,7 +38,8 @@ function Login() {
           login(values).then((res) => {
             messageApi.success('登录成功')
             if (res) {
-              localStorage.setItem(AUTH_TOKEN_KEY, res.access_token)
+              localStorage.setItem(AUTH_TOKEN_KEY, res.accessToken)
+              // localStorage.setItem(UPLOAD_TOKEN_KEY, res.uploadToken)
               setUserInfo(res.userInfo)
               navigate('/')
             }

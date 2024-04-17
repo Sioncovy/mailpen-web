@@ -1,4 +1,5 @@
 export const AUTH_TOKEN_KEY = 'AUTH_TOKEN'
+// export const UPLOAD_TOKEN_KEY = 'UPLOAD_TOKEN'
 
 export const ErrorCodeMap: {
   [key: string]: string
