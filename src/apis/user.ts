@@ -15,3 +15,7 @@ export async function login(data: Pick<User, 'username' | 'password'>): Promise<
 }> {
   return request.post('/users/login', data)
 }
+
+export async function register(data: Pick<User, 'username' | 'password'>): Promise<void> {
+  return request.post('/users/register', data)
+}

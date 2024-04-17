@@ -9,11 +9,16 @@ import Setting from '@/pages/SettingPage'
 import ContactDetail from '@/pages/Contact/ContactDetail'
 import ContactSearch from '@/pages/Contact/ContactSearch'
 import RequestList from '@/pages/Contact/RequestList'
+import Register from '@/pages/Register'
 
 const routes: RouteObject[] = [
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
   },
   {
     path: '/*',

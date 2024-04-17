@@ -3,16 +3,14 @@ import { Button, Card, Flex, Form, Input, Space, message } from 'antd'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './index.module.less'
-import { login } from '@/apis'
-import { AUTH_TOKEN_KEY } from '@/config'
-import { useAppStore, useThemeToken } from '@/hooks'
 import type { User } from '@/typings'
+import { useThemeToken } from '@/hooks'
+import { register } from '@/apis'
 
-function Login() {
+function Register() {
   const [loading, setLoading] = useState(false)
   const [messageApi, messageContext] = message.useMessage()
   const { token } = useThemeToken()
-  const [setUserInfo] = useAppStore(res => [res.setUserInfo])
   const navigate = useNavigate()
 
   return (
@@ -30,18 +28,14 @@ function Login() {
         <Space size={8} style={{ margin: '20px 0' }}>
           <div className={styles.bar} />
           <div style={{ fontSize: 22 }}>
-            登录 Mailpen
+            注册 Mailpen
           </div>
         </Space>
         <Form<Pick<User, 'username' | 'password'>> onFinish={(values) => {
           setLoading(true)
-          login(values).then((res) => {
-            messageApi.success('登录成功')
-            if (res) {
-              localStorage.setItem(AUTH_TOKEN_KEY, res.access_token)
-              setUserInfo(res.userInfo)
-              navigate('/')
-            }
+          register(values).then(() => {
+            messageApi.success('注册成功')
+            navigate('/login')
             setLoading(false)
           }).catch((err) => {
             messageApi.error(err.message)
@@ -69,10 +63,10 @@ function Login() {
                 htmlType="submit"
                 loading={loading}
               >
-                登录
+                注册
               </Button>
-              <Button type="link" href="/register">
-                还没有账号？去注册一个
+              <Button type="link" href="/login">
+                已经有账号了？直接去登录
               </Button>
             </Flex>
           </Form.Item>
@@ -82,4 +76,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Register
