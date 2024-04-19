@@ -1,4 +1,4 @@
-import { Flex, Radio, Typography } from 'antd'
+import { ColorPicker, Flex, Radio, Typography } from 'antd'
 import type { SettingConfig, SettingType } from '@/pages/SettingPage'
 import { useThemeToken } from '@/hooks'
 
@@ -7,7 +7,6 @@ interface SettingProps {
 }
 
 function Setting({ config }: SettingProps) {
-  console.log('✨  ~ Setting ~ config:', config)
   const { token } = useThemeToken()
 
   const renderSetting = (setting: SettingConfig) => {
@@ -18,6 +17,8 @@ function Setting({ config }: SettingProps) {
             {...setting.props}
           />
         )
+      case 'color-picker':
+        return (<ColorPicker {...setting.props} />)
       default:
         return null
     }

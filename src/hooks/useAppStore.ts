@@ -6,6 +6,7 @@ import { Language, Theme } from '@/typings'
 
 interface State {
   theme: Theme
+  primaryColor: string
   language: Language
   userInfo: UserPublic
   contactList: Contact[]
@@ -14,6 +15,7 @@ interface State {
 
 interface Actions {
   setTheme: (theme: Theme) => void
+  setPrimaryColor: (primaryColor: string) => void
   setUserInfo: (userInfo: UserPublic) => void
   setContactList: (contactList: Contact[]) => void
 }
@@ -22,12 +24,14 @@ type Store = State & Actions
 
 export const useAppStore = create(persist(immer<Store>(set => ({
   theme: Theme.Light,
+  primaryColor: '#5e7e1e',
   language: Language.Zh,
   userInfo: {} as UserPublic,
   contactList: [],
   contactMap: new Map(),
 
   setTheme: theme => set({ theme }),
+  setPrimaryColor: primaryColor => set({ primaryColor }),
   setUserInfo: userInfo => set({ userInfo }),
   setContactList: (contactList) => {
     const contactMap = new Map<string, Contact>()
@@ -40,6 +44,7 @@ export const useAppStore = create(persist(immer<Store>(set => ({
   partialize(state) {
     return {
       theme: state.theme,
+      primaryColor: state.primaryColor,
       language: state.language,
     }
   },

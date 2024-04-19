@@ -1,6 +1,6 @@
 import { MessageOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 import type { GlobalToken } from 'antd'
-import { ConfigProvider, Layout, Menu, theme as themeAntd } from 'antd'
+import { Avatar, ConfigProvider, Flex, Layout, Menu, theme as themeAntd } from 'antd'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { socket, useAppStore, useThemeToken } from '@/hooks'
@@ -32,8 +32,11 @@ function AddThemeToVars() {
 function BasicLayout(props: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const [theme, setUserInfo, setContactList] = useAppStore(state => [state.theme, state.setUserInfo, state.setContactList])
+  const [theme, userInfo, setUserInfo, setContactList, primaryColor] = useAppStore(state =>
+    [state.theme, state.userInfo, state.setUserInfo, state.setContactList, state.primaryColor],
+  )
   const [loading, setLoading] = useState(true)
+  const { token } = useThemeToken()
 
   const selectedKey = pathname.split('/')[1]
 
@@ -69,17 +72,26 @@ function BasicLayout(props: any) {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#bde0fe',
+          colorPrimary: primaryColor,
         },
         algorithm: theme === Theme.Light ? themeAntd.defaultAlgorithm : themeAntd.darkAlgorithm,
       }}
     >
       <AddThemeToVars />
       <Layout style={{ height: '100vh' }}>
-        <Layout.Sider theme={theme} collapsible>
+        <Layout.Sider theme={theme} collapsed style={{ borderRight: `1px solid ${token.colorBorderSecondary}` }}>
+          <Flex
+            justify="center"
+            style={{ margin: '20px 0' }}
+            onClick={() => {
+              navigate('/profile')
+            }}
+          >
+            <Avatar style={{ height: 40, width: 40 }} src={userInfo.avatar} />
+          </Flex>
           <Menu
             selectedKeys={[selectedKey]}
-            style={{ height: '100%' }}
+            style={{ height: 'calc(100%-40px)', borderInlineEnd: 'none' }}
             items={[
               {
                 key: 'chat',

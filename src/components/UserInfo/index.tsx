@@ -58,6 +58,7 @@ function UserInfo(props: UserInfoProps) {
                       count: 0,
                       createdAt: new Date().toISOString(),
                       updatedAt: new Date().toISOString(),
+                      pinned: false,
                     })
                   }
                   navigate(`/chat/${username}`)

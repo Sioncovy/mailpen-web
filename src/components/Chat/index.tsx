@@ -1,11 +1,10 @@
-import { useAsyncEffect } from 'ahooks'
 import { Divider, Flex, Typography } from 'antd'
-import { useEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import InputArea from './InputArea'
 import Message from './Message'
 import type { Chat as ChatType, Message as MessageType } from '@/typings'
 import { mailpenDatabase } from '@/storages'
-import { useAppStore, useThemeToken } from '@/hooks'
+import { socket, useAppStore, useThemeToken } from '@/hooks'
 
 interface ChatProps {
   chat?: ChatType
@@ -19,27 +18,36 @@ function Chat({ chat }: ChatProps) {
   const messageBoxBottomRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
-    if (messageBoxBottomRef && messageBoxBottomRef.current)
-      messageBoxBottomRef.current.scrollIntoView()
+    if (messageBoxBottomRef && messageBoxBottomRef.current) {
+      messageBoxBottomRef.current.scrollIntoView({
+        behavior: 'smooth',
+      })
+    }
   }
 
-  useEffect(() => {
-    scrollToBottom()
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      scrollToBottom()
+    }, 100)
   }, [messageList])
 
-  useAsyncEffect(async () => {
+  useLayoutEffect(() => {
     if (friend) {
       const messages = mailpenDatabase.messages.find({
         selector: {
-          $or: [{ sender: friend._id }, { sender: user._id }],
+          $or: [{ sender: friend._id, receiver: user._id }, { sender: user._id, receiver: friend._id }],
         },
       })
-      mailpenDatabase.messages.find({
+      const notReadMessageList = mailpenDatabase.messages.find({
         selector: { sender: friend._id, read: false },
-      }).update({
-        $set: { read: true },
+      }).exec()
+      notReadMessageList.then((res) => {
+        res.forEach((message) => {
+          socket.emit('readMessage', message._id)
+        })
       })
-      await mailpenDatabase.chats.findOne({
+
+      mailpenDatabase.chats.findOne({
         selector: { _id: friend.username },
       }).update({
         $set: { count: 0 },

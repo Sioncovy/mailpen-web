@@ -84,7 +84,7 @@ function ChatItem({ chat }: ChatItemProps) {
             navigate(`/chat/${chat._id}`)
           }}
           className={styles.chatItem}
-          style={{ backgroundColor: isActive ? token.colorPrimaryActive : undefined, padding: 10 }}
+          style={{ backgroundColor: isActive ? token.colorPrimaryBg : undefined, padding: 10 }}
           gap={10}
         >
           <div style={{ minWidth: 50, height: 50, borderRadius: '50%', overflow: 'hidden' }}>

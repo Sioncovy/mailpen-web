@@ -10,6 +10,7 @@ import ContactDetail from '@/pages/Contact/ContactDetail'
 import ContactSearch from '@/pages/Contact/ContactSearch'
 import RequestList from '@/pages/Contact/RequestList'
 import Register from '@/pages/Register'
+import Profile from '@/components/Profile'
 
 const routes: RouteObject[] = [
   {
@@ -29,6 +30,10 @@ const routes: RouteObject[] = [
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: 'profile',
+        element: <Profile />,
       },
       {
         path: 'chat',

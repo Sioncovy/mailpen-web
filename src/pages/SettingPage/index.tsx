@@ -1,11 +1,11 @@
-import type { RadioGroupProps } from 'antd'
+import type { ColorPickerProps, RadioGroupProps } from 'antd'
 import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import Setting from '@/components/Setting'
 import SettingSider from '@/components/Sider/SettingSider'
+import { useAppStore } from '@/hooks'
 import MainLayout from '@/layouts/MainLayout'
 import { Theme } from '@/typings'
-import { useAppStore } from '@/hooks'
 
 export interface CommonConfigProps {
   key: string
@@ -17,7 +17,12 @@ export interface RadioGroupConfigProp extends CommonConfigProps {
   props?: RadioGroupProps
 }
 
-export type SettingConfig = RadioGroupConfigProp
+export interface ColorPickerConfigProp extends CommonConfigProps {
+  type: 'color-picker'
+  props: ColorPickerProps
+}
+
+export type SettingConfig = RadioGroupConfigProp | ColorPickerConfigProp
 
 export interface SettingType {
   title: string
@@ -32,8 +37,9 @@ export enum SettingKeys {
 
 function SettingPage() {
   const { name } = useParams()
-  const [theme, setTheme] = useAppStore(state => [state.theme, state.setTheme])
-  console.log('✨  ~ SettingPage ~ theme:', theme)
+  const [theme, setTheme, primaryColor, setPrimaryColor] = useAppStore(state =>
+    [state.theme, state.setTheme, state.primaryColor, state.setPrimaryColor],
+  )
 
   const settingsMap: {
     [key: string]: SettingType
@@ -64,7 +70,29 @@ function SettingPage() {
             },
           },
         },
+        {
+          type: 'color-picker',
+          key: 'primaryColor',
+          label: '主题色',
+          props: {
+            value: primaryColor,
+            onChange(color) {
+              setPrimaryColor(color.toHexString())
+            },
+            showText: true,
+            size: 'middle',
+            style: {
+              width: 'fit-content',
+            },
+          },
+        },
       ],
+    },
+    account: {
+      title: '账号设置',
+      key: 'AccountSetting',
+      content: '更改账号的相关设置',
+      settings: [],
     },
   }
 

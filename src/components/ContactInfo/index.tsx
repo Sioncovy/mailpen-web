@@ -1,4 +1,4 @@
-import { Button, Card, Flex, Typography } from 'antd'
+import { Button, Card, Flex, Modal, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styles from './index.module.less'
@@ -15,6 +15,7 @@ function ContactInfo(props: ContactInfoProps) {
   const [contact, setContact] = useState<Contact | undefined>(props.contact)
   const { token } = useThemeToken()
   const navigate = useNavigate()
+  const [useModal, modalContext] = Modal.useModal()
 
   useEffect(() => {
     if (!props.contact)
@@ -27,6 +28,7 @@ function ContactInfo(props: ContactInfoProps) {
 
   return (
     <Flex justify="center">
+      {modalContext}
       <Flex gap={40} className={styles.container}>
         <Flex gap={8} vertical className={styles.left}>
           <img className={styles.avatar} src={contact.avatar} />
@@ -40,7 +42,7 @@ function ContactInfo(props: ContactInfoProps) {
             <div style={{ fontSize: token.fontSizeHeading5 }}>四川·乐山</div>
             <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>{contact.email}</Typography.Text>
           </Flex>
-          <Flex>
+          <Flex vertical gap={8}>
             <Button
               block
               onClick={async () => {
@@ -61,6 +63,21 @@ function ContactInfo(props: ContactInfoProps) {
               }}
             >
               去聊天
+            </Button>
+            <Button
+              block
+              danger
+              onClick={async () => {
+                useModal.confirm({
+                  title: '删除好友',
+                  content: '确定要删除该好友吗？',
+                  onOk: async () => {
+                    navigate('/contacts')
+                  },
+                })
+              }}
+            >
+              删除好友
             </Button>
           </Flex>
         </Flex>
