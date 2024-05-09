@@ -8,22 +8,26 @@ function MainLayout(props: any) {
     color: token.colorBorder,
     minSize: 160,
     dragMinSize: 160,
-    defaultSize: 300,
-    maxSize: 500,
+    defaultSize: 240,
+    maxSize: 400,
     key: 'main',
     pane1Style: {
-      height: '100%',
+      height: '100%'
     },
     pane2Style: {
-      height: '100%',
-    },
+      height: '100%'
+    }
   })
 
   return (
-    <Layout style={{ position: 'relative', height: '100vh', backgroundColor: token.colorBgContainer }}>
-      <SplitPane {...splitPaneProps}>
-        {props.children}
-      </SplitPane>
+    <Layout
+      style={{
+        position: 'relative',
+        height: '100vh',
+        backgroundColor: token.colorBgContainer
+      }}
+    >
+      <SplitPane {...splitPaneProps}>{props.children}</SplitPane>
     </Layout>
   )
 }

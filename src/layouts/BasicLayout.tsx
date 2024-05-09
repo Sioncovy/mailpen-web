@@ -1,6 +1,17 @@
-import { MessageOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import {
+  MessageOutlined,
+  SettingOutlined,
+  UserOutlined
+} from '@ant-design/icons'
 import type { GlobalToken } from 'antd'
-import { Avatar, ConfigProvider, Flex, Layout, Menu, theme as themeAntd } from 'antd'
+import {
+  Avatar,
+  ConfigProvider,
+  Flex,
+  Layout,
+  Menu,
+  theme as themeAntd
+} from 'antd'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { socket, useAppStore, useThemeToken } from '@/hooks'
@@ -14,14 +25,14 @@ function AddThemeToVars() {
 
   useEffect(() => {
     realToken.fontSizeSM = 12
-    const usefulToken = Object.keys(realToken).filter(_ => !/-[0-9]/.test(_))
+    const usefulToken = Object.keys(realToken).filter((_) => !/-[0-9]/.test(_))
     usefulToken.forEach((key) => {
       const needUnit = ['borderRadius', 'fontSize', 'size']
       document.documentElement.style.setProperty(
         `--${key}`,
-        needUnit.some(item => key.startsWith(item))
-          ? `${realToken[key as (keyof GlobalToken)]}px` as string
-          : realToken[key as (keyof GlobalToken)] as string,
+        needUnit.some((item) => key.startsWith(item))
+          ? (`${realToken[key as keyof GlobalToken]}px` as string)
+          : (realToken[key as keyof GlobalToken] as string)
       )
     })
   }, [realToken])
@@ -32,9 +43,14 @@ function AddThemeToVars() {
 function BasicLayout(props: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const [theme, userInfo, setUserInfo, setContactList, primaryColor] = useAppStore(state =>
-    [state.theme, state.userInfo, state.setUserInfo, state.setContactList, state.primaryColor],
-  )
+  const [theme, userInfo, setUserInfo, setContactList, primaryColor] =
+    useAppStore((state) => [
+      state.theme,
+      state.userInfo,
+      state.setUserInfo,
+      state.setContactList,
+      state.primaryColor
+    ])
   const [loading, setLoading] = useState(true)
   const { token } = useThemeToken()
 
@@ -48,38 +64,46 @@ function BasicLayout(props: any) {
       setLoading(false)
     }
 
-    queryProfile().then((res) => {
-      setUserInfo(res)
-      socket.emit('login', {
-        id: res._id,
+    queryProfile()
+      .then((res) => {
+        setUserInfo(res)
+        socket.emit('login', {
+          id: res._id
+        })
       })
-    }).catch(() => {
-      navigate('/login', { replace: true })
-    }).finally(() => {
-      setLoading(false)
-    })
+      .catch(() => {
+        navigate('/login', { replace: true })
+      })
+      .finally(() => {
+        setLoading(false)
+      })
 
     queryContactList().then((res) => {
-      if (res)
-        setContactList(res)
+      if (res) setContactList(res)
     })
   }, [])
 
-  if (loading)
-    return <Loading height="100vh" />
+  if (loading) return <Loading height="100vh" />
 
   return (
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: primaryColor,
+          colorPrimary: primaryColor
         },
-        algorithm: theme === Theme.Light ? themeAntd.defaultAlgorithm : themeAntd.darkAlgorithm,
+        algorithm:
+          theme === Theme.Light
+            ? themeAntd.defaultAlgorithm
+            : themeAntd.darkAlgorithm
       }}
     >
       <AddThemeToVars />
       <Layout style={{ height: '100vh' }}>
-        <Layout.Sider theme={theme} collapsed style={{ borderRight: `1px solid ${token.colorBorderSecondary}` }}>
+        <Layout.Sider
+          theme={theme}
+          collapsed
+          style={{ borderRight: `1px solid ${token.colorBorderSecondary}` }}
+        >
           <Flex
             justify="center"
             style={{ margin: '20px 0' }}
@@ -98,22 +122,22 @@ function BasicLayout(props: any) {
                 title: '聊天',
                 label: '聊天',
                 icon: <MessageOutlined />,
-                onClick: () => navigate('/chat'),
+                onClick: () => navigate('/chat')
               },
               {
                 key: 'contact',
                 title: '联系人',
                 label: '联系人',
                 icon: <UserOutlined />,
-                onClick: () => navigate('/contact'),
+                onClick: () => navigate('/contact')
               },
               {
                 key: 'setting',
                 title: '设置',
                 label: '设置',
                 icon: <SettingOutlined />,
-                onClick: () => navigate('/setting'),
-              },
+                onClick: () => navigate('/setting')
+              }
             ]}
           />
         </Layout.Sider>
