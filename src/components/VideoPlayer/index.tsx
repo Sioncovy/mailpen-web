@@ -32,7 +32,7 @@ const VideoPlayer = ({
     }
   }, [stream])
 
-  return <video style={{ width: '100%' }} ref={ref} autoPlay />
+  return <video style={{ width: '100%' }} ref={ref} autoPlay controls />
 }
 
 export default VideoPlayer

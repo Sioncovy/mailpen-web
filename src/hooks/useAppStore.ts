@@ -22,30 +22,35 @@ interface Actions {
 
 type Store = State & Actions
 
-export const useAppStore = create(persist(immer<Store>(set => ({
-  theme: Theme.Light,
-  primaryColor: '#5e7e1e',
-  language: Language.Zh,
-  userInfo: {} as UserPublic,
-  contactList: [],
-  contactMap: new Map(),
+export const useAppStore = create(
+  persist(
+    immer<Store>((set) => ({
+      theme: Theme.Light,
+      primaryColor: '#5e7e1e',
+      language: Language.Zh,
+      userInfo: {} as UserPublic,
+      contactList: [],
+      contactMap: new Map(),
 
-  setTheme: theme => set({ theme }),
-  setPrimaryColor: primaryColor => set({ primaryColor }),
-  setUserInfo: userInfo => set({ userInfo }),
-  setContactList: (contactList) => {
-    const contactMap = new Map<string, Contact>()
-    contactList.forEach(contact => contactMap.set(contact._id, contact))
-    set({ contactList, contactMap })
-  },
-})), {
-  name: 'app-store',
-  storage: createJSONStorage(() => localStorage),
-  partialize(state) {
-    return {
-      theme: state.theme,
-      primaryColor: state.primaryColor,
-      language: state.language,
+      setTheme: (theme) => set({ theme }),
+      setPrimaryColor: (primaryColor) => set({ primaryColor }),
+      setUserInfo: (userInfo) => set({ userInfo }),
+      setContactList: (contactList) => {
+        const contactMap = new Map<string, Contact>()
+        contactList.forEach((contact) => contactMap.set(contact._id, contact))
+        set({ contactList, contactMap })
+      }
+    })),
+    {
+      name: 'app-store',
+      storage: createJSONStorage(() => localStorage),
+      partialize(state) {
+        return {
+          theme: state.theme,
+          primaryColor: state.primaryColor,
+          language: state.language
+        }
+      }
     }
-  },
-}))
+  )
+)

@@ -8,6 +8,7 @@ import Message from './Message'
 import { Constraints, getLocalUserMedia } from '@/utils'
 import VideoPlayer from '../VideoPlayer'
 import { VideoCameraOutlined } from '@ant-design/icons'
+import { useStateStore } from '@/hooks/useStateStore'
 
 interface ChatProps {
   chat?: ChatType
@@ -19,6 +20,7 @@ function Chat({ chat }: ChatProps) {
     state.userInfo,
     state.contactList
   ])
+  const [setVideo] = useStateStore((state) => [state.setVideo])
   const friend = contactList.find((contact) => contact.username === chat?._id)
   const [messageList, setMessageList] = useState<MessageType[]>([])
   const messageBoxBottomRef = useRef<HTMLDivElement>(null)
@@ -82,12 +84,6 @@ function Chat({ chat }: ChatProps) {
     }
   }, [friend])
 
-  // useEffect(() => {
-  //   if (user._id && friend?._id) {
-  //     initCallerInfo(user._id, friend?._id)
-  //   }
-  // }, [user._id, friend?._id])
-
   useEffect(() => {
     socket.on('onCall', async (data) => {
       console.log('onCall', data)
@@ -101,10 +97,8 @@ function Chat({ chat }: ChatProps) {
   useEffect(() => {
     if (localRtcPc) {
       socket.on('onOffer', async (data) => {
-        console.log('offer', data)
         // 保存对方发送过来的 offer 并设置为远程描述
         localRtcPc.setRemoteDescription(data.offer)
-        console.log('✨  ~ socket.on ~ localRtcPc:', localRtcPc)
         // 创建 Answer
         const answer = await localRtcPc.createAnswer()
         // 设置 Answer 为本地描述
@@ -117,12 +111,10 @@ function Chat({ chat }: ChatProps) {
         })
       })
       socket.on('onAnswer', async (data) => {
-        console.log('answer', data)
         // 保存对方发送过来的 Answer 并设置为远程描述
         await localRtcPc.setRemoteDescription(data.answer)
       })
       socket.on('onCandidate', async (data) => {
-        console.log('candidate', data)
         await localRtcPc.addIceCandidate(data.candidate)
       })
 
@@ -141,6 +133,7 @@ function Chat({ chat }: ChatProps) {
         receiver: friend?._id
       })
       initCallerInfo(user._id, friend?._id)
+      setVideo(true)
     }
   }
 
@@ -202,13 +195,10 @@ function Chat({ chat }: ChatProps) {
     receiver: string
   ) => {
     if (!pc) return
-    console.log('在监听啦')
 
-    const channel = pc.createDataChannel('chat')
+    // const channel = pc.createDataChannel('chat')
     // setChannel(channel)
     pc.ontrack = (event) => {
-      console.log('在接收啦')
-
       if (remoteStream) {
         setRemoteStream((stream) => {
           stream?.addTrack(event.track)
@@ -314,27 +304,33 @@ function Chat({ chat }: ChatProps) {
           </div>
         </Flex>
         <Divider type="vertical" style={{ height: '100%' }} />
-        <Flex vertical style={{ flex: 1 }}>
-          <div>
-            {localStream && localRtcPc && (
-              <VideoPlayer
-                stream={localStream}
-                // localUID={user._id}
-                // remoteUID={friend._id}
-                // peerConnection={localRtcPc}
-              />
-            )}
-          </div>
-          <div>
-            {remoteStream && localRtcPc && (
-              <VideoPlayer
-                stream={remoteStream}
-                // remoteUID={user._id}
-                // localUID={friend._id}
-                // peerConnection={localRtcPc}
-              />
-            )}
-          </div>
+        <Flex vertical gap={24} style={{ flex: 1 }}>
+          <Flex vertical>
+            <Typography.Title level={5}>我</Typography.Title>
+            <div>
+              {localStream && localRtcPc && (
+                <VideoPlayer
+                  stream={localStream}
+                  // localUID={user._id}
+                  // remoteUID={friend._id}
+                  // peerConnection={localRtcPc}
+                />
+              )}
+            </div>
+          </Flex>
+          <Flex vertical>
+            <Typography.Title level={5}>{friend.username}</Typography.Title>
+            <div>
+              {remoteStream && localRtcPc && (
+                <VideoPlayer
+                  stream={remoteStream}
+                  // remoteUID={user._id}
+                  // localUID={friend._id}
+                  // peerConnection={localRtcPc}
+                />
+              )}
+            </div>
+          </Flex>
         </Flex>
       </Flex>
     </Flex>
