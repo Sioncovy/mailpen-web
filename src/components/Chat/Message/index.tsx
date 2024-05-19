@@ -60,6 +60,14 @@ function Message({
           </Flex>
         )
       }
+      case ChatMessageType.Audio: {
+        return (
+          <audio controls>
+            <source src={content.url} type="audio/wav" />
+            您的浏览器不支持 audio 元素
+          </audio>
+        )
+      }
       default: {
         return <Typography.Text type="danger">消息异常</Typography.Text>
       }
