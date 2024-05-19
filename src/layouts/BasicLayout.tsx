@@ -19,6 +19,7 @@ import { AUTH_TOKEN_KEY } from '@/config'
 import Loading from '@/components/Loading'
 import { queryContactList, queryProfile } from '@/apis'
 import { Theme } from '@/typings'
+import zh from 'antd/es/locale/zh_CN'
 
 function AddThemeToVars() {
   const { token: realToken } = useThemeToken()
@@ -96,6 +97,7 @@ function BasicLayout(props: any) {
             ? themeAntd.defaultAlgorithm
             : themeAntd.darkAlgorithm
       }}
+      locale={zh}
     >
       <AddThemeToVars />
       <Layout style={{ height: '100vh' }}>

@@ -23,6 +23,7 @@ function Chat({ chat }: ChatProps) {
   const [setVideo] = useStateStore((state) => [state.setVideo])
   const friend = contactList.find((contact) => contact.username === chat?._id)
   const [messageList, setMessageList] = useState<MessageType[]>([])
+  console.log('✨  ~ Chat ~ messageList:', messageList)
   const messageBoxBottomRef = useRef<HTMLDivElement>(null)
 
   const PeerConnection = window.RTCPeerConnection
@@ -230,8 +231,14 @@ function Chat({ chat }: ChatProps) {
   if (!chat || !friend) return <div>请选择正确的好友</div>
 
   return (
-    <Flex vertical style={{ height: '100%', maxHeight: '100vh' }}>
-      <Flex style={{ padding: token.padding }} justify="space-between">
+    <Flex
+      vertical
+      style={{ height: '100%', maxHeight: '100vh', overflow: 'auto' }}
+    >
+      <Flex
+        style={{ padding: token.padding, flexShrink: 0 }}
+        justify="space-between"
+      >
         <Flex align="center" gap={8}>
           <div
             style={{
@@ -266,7 +273,7 @@ function Chat({ chat }: ChatProps) {
         </Flex>
       </Flex>
       <Divider style={{ margin: 0 }} />
-      <Flex flex={1}>
+      <Flex flex={1} style={{ overflow: 'auto' }}>
         <Flex vertical style={{ flex: 3, height: '100%' }}>
           <Flex
             flex={1}

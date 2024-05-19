@@ -50,6 +50,9 @@ importers:
       immer:
         specifier: ^10.0.4
         version: 10.0.4
+      js-audio-recorder:
+        specifier: ^1.0.7
+        version: 1.0.7
       localforage:
         specifier: ^1.10.0
         version: 1.10.0
@@ -2311,6 +2314,9 @@ packages:
   jackspeak@2.3.6:
     resolution: {integrity: sha512-N3yCS/NegsOBokc8GAdM8UcmfsKiSS8cipheD/nivzr700H+nsMOxJjQnvwOcRYVuFkdH0wGUvW2WbXGmrZGbQ==}
     engines: {node: '>=14'}
+
+  js-audio-recorder@1.0.7:
+    resolution: {integrity: sha512-JiDODCElVHGrFyjGYwYyNi7zCbKk9va9C77w+zCPMmi4C6ix7zsX2h3ddHugmo4dOTOTCym9++b/wVW9nC0IaA==}
 
   js-base64@3.7.7:
     resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
@@ -6381,6 +6387,8 @@ snapshots:
       '@isaacs/cliui': 8.0.2
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
+
+  js-audio-recorder@1.0.7: {}
 
   js-base64@3.7.7: {}
 

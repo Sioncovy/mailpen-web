@@ -25,6 +25,7 @@
     "dotenv": "^16.4.1",
     "emoji-mart": "^5.5.2",
     "immer": "^10.0.4",
+    "js-audio-recorder": "^1.0.7",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "nanoid": "^5.0.7",

@@ -11,29 +11,32 @@ import ContactSearch from '@/pages/Contact/ContactSearch'
 import RequestList from '@/pages/Contact/RequestList'
 import Register from '@/pages/Register'
 import Profile from '@/components/Profile'
+import Test from '@/pages/Test'
 
 const routes: RouteObject[] = [
   {
     path: '/login',
-    element: <Login />,
+    element: <Login />
   },
   {
     path: '/register',
-    element: <Register />,
+    element: <Register />
   },
   {
     path: '/*',
-    element: <MainLayout>
-      <Outlet />
-    </MainLayout>,
+    element: (
+      <MainLayout>
+        <Outlet />
+      </MainLayout>
+    ),
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <Home />
       },
       {
         path: 'profile',
-        element: <Profile />,
+        element: <Profile />
       },
       {
         path: 'chat',
@@ -41,29 +44,31 @@ const routes: RouteObject[] = [
         children: [
           {
             path: ':username',
-            element: <ChatPage />,
-          },
-        ],
+            element: <ChatPage />
+          }
+        ]
       },
       {
         path: 'contact',
-        element: <Contact>
-          <Outlet />
-        </Contact>,
+        element: (
+          <Contact>
+            <Outlet />
+          </Contact>
+        ),
         children: [
           {
             path: ':username',
-            element: <ContactDetail />,
+            element: <ContactDetail />
           },
           {
             path: 'search',
-            element: <ContactSearch />,
+            element: <ContactSearch />
           },
           {
             path: 'request',
-            element: <RequestList />,
-          },
-        ],
+            element: <RequestList />
+          }
+        ]
       },
       {
         path: 'setting',
@@ -71,12 +76,16 @@ const routes: RouteObject[] = [
         children: [
           {
             path: ':name',
-            index: true,
-          },
-        ],
+            index: true
+          }
+        ]
       },
-    ],
-  },
+      {
+        path: 'test',
+        element: <Test />
+      }
+    ]
+  }
 ]
 
 export default routes
