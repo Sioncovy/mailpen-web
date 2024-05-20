@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
+import { CallType } from '../Chat'
 
 interface VideoPlayerProps {
   stream: MediaStream
+  type: CallType
   // peerConnection: RTCPeerConnection
   // localUID: string
   // remoteUID: string
@@ -11,7 +13,8 @@ const VideoPlayer = ({
   // peerConnection,
   // localUID,
   // remoteUID,
-  stream
+  stream,
+  type
 }: VideoPlayerProps) => {
   const ref = useRef<HTMLVideoElement>(null)
 
@@ -32,7 +35,11 @@ const VideoPlayer = ({
     }
   }, [stream])
 
-  return <video style={{ width: '100%' }} ref={ref} autoPlay controls />
+  return type === CallType.Video ? (
+    <video style={{ width: '100%' }} ref={ref} autoPlay controls />
+  ) : (
+    <audio style={{ width: '100%' }} ref={ref} autoPlay controls />
+  )
 }
 
 export default VideoPlayer

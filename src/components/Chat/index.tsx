@@ -1,17 +1,22 @@
 import { socket, useAppStore, useThemeToken } from '@/hooks'
+import { useStateStore } from '@/hooks/useStateStore'
 import { mailpenDatabase } from '@/storages'
 import type { Chat as ChatType, Message as MessageType } from '@/typings'
+import { getLocalUserMedia } from '@/utils'
+import { PhoneOutlined, VideoCameraOutlined } from '@ant-design/icons'
 import { Button, Divider, Flex, Tooltip, Typography } from 'antd'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import VideoPlayer from '../MediaPlayer'
 import InputArea from './InputArea'
 import Message from './Message'
-import { Constraints, getLocalUserMedia } from '@/utils'
-import VideoPlayer from '../VideoPlayer'
-import { VideoCameraOutlined } from '@ant-design/icons'
-import { useStateStore } from '@/hooks/useStateStore'
 
 interface ChatProps {
   chat?: ChatType
+}
+
+export enum CallType {
+  Audio = 'audio',
+  Video = 'video'
 }
 
 function Chat({ chat }: ChatProps) {
@@ -23,17 +28,22 @@ function Chat({ chat }: ChatProps) {
   const [setVideo] = useStateStore((state) => [state.setVideo])
   const friend = contactList.find((contact) => contact.username === chat?._id)
   const [messageList, setMessageList] = useState<MessageType[]>([])
-  console.log('✨  ~ Chat ~ messageList:', messageList)
   const messageBoxBottomRef = useRef<HTMLDivElement>(null)
+  const [callType, setCallType] = useState<CallType | null>(null)
 
   const PeerConnection = window.RTCPeerConnection
 
   // const [channel, setChannel] = useState<RTCDataChannel | null>(null)
   const [localRtcPc, setLocalRtcPc] = useState<RTCPeerConnection>()
-  const [constraints, setConstraints] = useState<Constraints>({
-    audio: true,
-    video: true
-  })
+  // const [constraints, setConstraints] = useState<Constraints>({
+  //   audio: true,
+  //   video: true
+  // })
+  // 配置 STUN 服务器
+  const configuration = {
+    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+  }
+
   const [localStream, setLocalStream] = useState<MediaStream | null>(null)
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null)
 
@@ -87,8 +97,8 @@ function Chat({ chat }: ChatProps) {
 
   useEffect(() => {
     socket.on('onCall', async (data) => {
-      console.log('onCall', data)
-      initCalleeInfo(data.sender, data.receiver)
+      setCallType(data.type)
+      initCalleeInfo(data.sender, data.receiver, data.type)
     })
     return () => {
       socket.off('onCall')
@@ -127,23 +137,32 @@ function Chat({ chat }: ChatProps) {
     }
   }, [localRtcPc])
 
-  const call = async () => {
+  const call = async (type: CallType) => {
     if (user._id && friend?._id) {
+      setCallType(type)
       socket.emit('call', {
+        type,
         sender: user._id,
         receiver: friend?._id
       })
-      initCallerInfo(user._id, friend?._id)
+      initCallerInfo(user._id, friend?._id, type)
       setVideo(true)
     }
   }
 
   // sender 是自己，receiver 是对方
-  const initCallerInfo = async (sender: string, receiver: string) => {
-    const pc = new PeerConnection()
+  const initCallerInfo = async (
+    sender: string,
+    receiver: string,
+    type: CallType
+  ) => {
+    const pc = new PeerConnection(configuration)
 
     // 获取本地媒体并添加到 pc 中
-    let localStream = await getLocalUserMedia(constraints)
+    let localStream = await getLocalUserMedia({
+      audio: true,
+      video: type === CallType.Video
+    })
     if (!localStream) {
       console.error('未获取到本地媒体')
       return
@@ -172,10 +191,17 @@ function Chat({ chat }: ChatProps) {
   }
 
   // sender 是对方，receiver 是自己
-  const initCalleeInfo = async (sender: string, receiver: string) => {
-    const pc = new PeerConnection()
-
-    const localStream = await getLocalUserMedia(constraints)
+  const initCalleeInfo = async (
+    sender: string,
+    receiver: string,
+    type: CallType
+  ) => {
+    const pc = new PeerConnection(configuration)
+    setCallType(type)
+    const localStream = await getLocalUserMedia({
+      audio: true,
+      video: type === CallType.Video
+    })
     if (!localStream) {
       console.error('未获取到本地媒体')
       return
@@ -260,13 +286,23 @@ function Chat({ chat }: ChatProps) {
           </Flex>
         </Flex>
         <Flex align="center" gap={8}>
+          <Tooltip title="语音通话">
+            <Button
+              type="text"
+              size="large"
+              icon={<PhoneOutlined />}
+              onClick={() => {
+                call(CallType.Audio)
+              }}
+            />
+          </Tooltip>
           <Tooltip title="视频通话">
             <Button
               type="text"
               size="large"
               icon={<VideoCameraOutlined />}
               onClick={() => {
-                call()
+                call(CallType.Video)
               }}
             />
           </Tooltip>
@@ -315,9 +351,10 @@ function Chat({ chat }: ChatProps) {
           <Flex vertical>
             <Typography.Title level={5}>我</Typography.Title>
             <div>
-              {localStream && localRtcPc && (
+              {localStream && localRtcPc && callType && (
                 <VideoPlayer
                   stream={localStream}
+                  type={callType}
                   // localUID={user._id}
                   // remoteUID={friend._id}
                   // peerConnection={localRtcPc}
@@ -328,9 +365,10 @@ function Chat({ chat }: ChatProps) {
           <Flex vertical>
             <Typography.Title level={5}>{friend.username}</Typography.Title>
             <div>
-              {remoteStream && localRtcPc && (
+              {remoteStream && callType && (
                 <VideoPlayer
                   stream={remoteStream}
+                  type={callType}
                   // remoteUID={user._id}
                   // localUID={friend._id}
                   // peerConnection={localRtcPc}

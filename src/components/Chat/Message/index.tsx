@@ -47,7 +47,7 @@ function Message({
       }
       case ChatMessageType.File: {
         return (
-          <Flex gap={8}>
+          <Flex gap={8} style={{ width: '100%' }}>
             <FileInfo name={content.filename} size={content.size} />
             <Button
               size="small"
