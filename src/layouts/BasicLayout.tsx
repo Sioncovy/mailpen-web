@@ -53,7 +53,6 @@ function BasicLayout(props: any) {
       state.primaryColor
     ])
   const [loading, setLoading] = useState(true)
-  const { token } = useThemeToken()
 
   const selectedKey = pathname.split('/')[1]
 
@@ -104,7 +103,10 @@ function BasicLayout(props: any) {
         <Layout.Sider
           theme={theme}
           collapsed
-          style={{ borderRight: `1px solid ${token.colorBorderSecondary}` }}
+          style={{
+            background: 'var(--colorBgContainer)',
+            borderRight: '1px solid var(--colorBorderSecondary)'
+          }}
         >
           <Flex
             justify="center"

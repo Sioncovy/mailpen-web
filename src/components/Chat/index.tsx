@@ -346,37 +346,41 @@ function Chat({ chat }: ChatProps) {
             <InputArea userId={user._id} friendId={friend._id} />
           </div>
         </Flex>
-        <Divider type="vertical" style={{ height: '100%' }} />
-        <Flex vertical gap={24} style={{ flex: 1 }}>
-          <Flex vertical>
-            <Typography.Title level={5}>我</Typography.Title>
-            <div>
-              {localStream && localRtcPc && callType && (
-                <VideoPlayer
-                  stream={localStream}
-                  type={callType}
-                  // localUID={user._id}
-                  // remoteUID={friend._id}
-                  // peerConnection={localRtcPc}
-                />
-              )}
-            </div>
-          </Flex>
-          <Flex vertical>
-            <Typography.Title level={5}>{friend.username}</Typography.Title>
-            <div>
-              {remoteStream && callType && (
-                <VideoPlayer
-                  stream={remoteStream}
-                  type={callType}
-                  // remoteUID={user._id}
-                  // localUID={friend._id}
-                  // peerConnection={localRtcPc}
-                />
-              )}
-            </div>
-          </Flex>
-        </Flex>
+        {callType && (
+          <>
+            <Divider type="vertical" style={{ height: '100%' }} />
+            <Flex vertical gap={24} style={{ flex: 1 }}>
+              <Flex vertical>
+                <Typography.Title level={5}>我</Typography.Title>
+                <div>
+                  {localStream && localRtcPc && callType && (
+                    <VideoPlayer
+                      stream={localStream}
+                      type={callType}
+                      // localUID={user._id}
+                      // remoteUID={friend._id}
+                      // peerConnection={localRtcPc}
+                    />
+                  )}
+                </div>
+              </Flex>
+              <Flex vertical>
+                <Typography.Title level={5}>{friend.username}</Typography.Title>
+                <div>
+                  {remoteStream && callType && (
+                    <VideoPlayer
+                      stream={remoteStream}
+                      type={callType}
+                      // remoteUID={user._id}
+                      // localUID={friend._id}
+                      // peerConnection={localRtcPc}
+                    />
+                  )}
+                </div>
+              </Flex>
+            </Flex>
+          </>
+        )}
       </Flex>
     </Flex>
   )
