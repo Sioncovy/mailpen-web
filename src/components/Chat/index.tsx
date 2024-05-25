@@ -1,10 +1,11 @@
+import { queryContact } from '@/apis'
 import { socket, useAppStore, useThemeToken } from '@/hooks'
 import { useStateStore } from '@/hooks/useStateStore'
 import { mailpenDatabase } from '@/storages'
 import type { Chat as ChatType, Message as MessageType } from '@/typings'
 import { getLocalUserMedia } from '@/utils'
 import { PhoneOutlined, VideoCameraOutlined } from '@ant-design/icons'
-import { Button, Divider, Flex, Tooltip, Typography } from 'antd'
+import { Button, Divider, Flex, Tooltip, Typography, message } from 'antd'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import VideoPlayer from '../MediaPlayer'
 import InputArea from './InputArea'
@@ -30,6 +31,7 @@ function Chat({ chat }: ChatProps) {
   const [messageList, setMessageList] = useState<MessageType[]>([])
   const messageBoxBottomRef = useRef<HTMLDivElement>(null)
   const [callType, setCallType] = useState<CallType | null>(null)
+  const [messageApi, messageContextHolder] = message.useMessage()
 
   const PeerConnection = window.RTCPeerConnection
 
@@ -47,6 +49,28 @@ function Chat({ chat }: ChatProps) {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null)
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null)
 
+  const getContactInfo = () => {
+    if (!friend) return null
+    queryContact(friend._id)
+      .then((res) => {
+        if (res) {
+          mailpenDatabase.chats
+            .findOne({
+              selector: { _id: friend.username }
+            })
+            .update({
+              $set: {
+                name: friend.remark || friend.nickname || friend.username,
+                avatar: friend.avatar
+              }
+            })
+        }
+      })
+      .catch((error) => {
+        messageApi.error(error.message)
+      })
+  }
+
   const scrollToBottom = () => {
     if (messageBoxBottomRef && messageBoxBottomRef.current) {
       messageBoxBottomRef.current.scrollIntoView({
@@ -55,14 +79,44 @@ function Chat({ chat }: ChatProps) {
     }
   }
 
+  const readMessage = () => {
+    if (friend) {
+      const notReadMessageList = mailpenDatabase.messages
+        .find({
+          selector: { sender: friend._id, read: false }
+        })
+        .exec()
+      notReadMessageList.then((res) => {
+        // console.log('✨  ~ notReadMessageList.then ~ res:', res)
+        res.forEach((message) => {
+          socket.emit('readMessage', {
+            id: message._id,
+            receiver: friend._id
+          })
+        })
+      })
+    }
+  }
+
   useLayoutEffect(() => {
     setTimeout(() => {
       scrollToBottom()
+      if (friend) {
+        mailpenDatabase.chats
+          .findOne({
+            selector: { _id: friend.username }
+          })
+          .update({
+            $set: { count: 0 }
+          })
+        readMessage()
+      }
     }, 100)
   }, [messageList])
 
   useLayoutEffect(() => {
     if (friend) {
+      getContactInfo()
       const messages = mailpenDatabase.messages.find({
         selector: {
           $or: [
@@ -71,24 +125,6 @@ function Chat({ chat }: ChatProps) {
           ]
         }
       })
-      const notReadMessageList = mailpenDatabase.messages
-        .find({
-          selector: { sender: friend._id, read: false }
-        })
-        .exec()
-      notReadMessageList.then((res) => {
-        res.forEach((message) => {
-          socket.emit('readMessage', message._id)
-        })
-      })
-
-      mailpenDatabase.chats
-        .findOne({
-          selector: { _id: friend.username }
-        })
-        .update({
-          $set: { count: 0 }
-        })
       messages.$.subscribe((list) => {
         setMessageList(list)
       })
@@ -261,6 +297,7 @@ function Chat({ chat }: ChatProps) {
       vertical
       style={{ height: '100%', maxHeight: '100vh', overflow: 'auto' }}
     >
+      {messageContextHolder}
       <Flex
         style={{ padding: token.padding, flexShrink: 0 }}
         justify="space-between"

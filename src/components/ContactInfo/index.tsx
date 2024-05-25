@@ -1,12 +1,12 @@
+import { updateContact } from '@/apis'
+import { useThemeToken } from '@/hooks'
+import { mailpenDatabase } from '@/storages'
+import type { Contact } from '@/typings'
 import { Button, Card, Flex, Modal, Typography, message } from 'antd'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import styles from './index.module.less'
-import type { Contact } from '@/typings'
-import { mailpenDatabase } from '@/storages'
-import { useThemeToken } from '@/hooks'
+import { useNavigate } from 'react-router-dom'
 import FormModal from '../FormModal'
-import { updateContact } from '@/apis'
+import styles from './index.module.less'
 
 interface ContactInfoProps {
   contact: Contact
@@ -14,7 +14,6 @@ interface ContactInfoProps {
 }
 
 function ContactInfo(props: ContactInfoProps) {
-  const { username } = useParams()
   const [contact, setContact] = useState<Contact | undefined>(props.contact)
   const { token } = useThemeToken()
   const navigate = useNavigate()
@@ -47,8 +46,15 @@ function ContactInfo(props: ContactInfoProps) {
               {contact.username}
             </Typography.Text>
             <Typography.Text style={{ fontSize: token.fontSizeHeading3 }}>
-              {contact.nickname}
+              {contact.remark
+                ? `${contact.remark}（${contact.nickname || contact.username}）`
+                : contact.nickname || contact.username}
             </Typography.Text>
+            {/* <Typography.Text ellipsis style={{ fontSize: token.fontSizeLG }}>
+              {remark
+                ? `${remark}（${nickname || username}）`
+                : nickname || username}
+            </Typography.Text> */}
           </Flex>
           <Flex vertical gap={0}>
             <div style={{ fontSize: token.fontSizeHeading5 }}>四川·乐山</div>
@@ -61,11 +67,11 @@ function ContactInfo(props: ContactInfoProps) {
               block
               onClick={async () => {
                 const chat = await mailpenDatabase.chats
-                  .findOne({ selector: { _id: username } })
+                  .findOne({ selector: { _id: contact.username } })
                   .exec()
-                if (!chat && username) {
+                if (!chat && contact.username) {
                   await mailpenDatabase.chats.insert({
-                    _id: username,
+                    _id: contact.username,
                     name:
                       contact.remark || contact.nickname || contact.username,
                     avatar: contact.avatar,
@@ -76,7 +82,7 @@ function ContactInfo(props: ContactInfoProps) {
                     pinned: false
                   })
                 }
-                navigate(`/chat/${username}`)
+                navigate(`/chat/${contact.username}`)
               }}
             >
               去聊天
