@@ -14,20 +14,21 @@ interface UserInfoProps {
 function UserInfo(props: UserInfoProps) {
   const navigate = useNavigate()
   const { username } = useParams()
-  const [contactMap, userInfo] = useAppStore(state => [state.contactMap, state.userInfo])
+  const [contactMap, userInfo] = useAppStore((state) => [
+    state.contactMap,
+    state.userInfo
+  ])
   const [user, setUser] = useState<UserPublic>(props.user)
   const { token } = useThemeToken()
   const friend = contactMap.get(userInfo._id)
   const [messageApi, messageContextHolder] = message.useMessage()
 
   useEffect(() => {
-    if (!props.user)
-      return
+    if (!props.user) return
     setUser(props.user)
   }, [props.user])
 
-  if (!user)
-    return null
+  if (!user) return null
 
   return (
     <Flex justify="center">
@@ -36,19 +37,33 @@ function UserInfo(props: UserInfoProps) {
         <Flex gap={8} vertical className={styles.left}>
           <img className={styles.avatar} src={user.avatar} />
           <Flex vertical gap={0}>
-            <Typography.Text style={{ fontSize: token.fontSizeHeading4, color: token.colorTextTertiary, marginBottom: -token.marginXS }}>{user.username}</Typography.Text>
-            <Typography.Text style={{ fontSize: token.fontSizeHeading3 }}>{user.nickname}</Typography.Text>
+            <Typography.Text
+              style={{
+                fontSize: token.fontSizeHeading4,
+                color: token.colorTextTertiary,
+                marginBottom: -token.marginXS
+              }}
+            >
+              {user.username}
+            </Typography.Text>
+            <Typography.Text style={{ fontSize: token.fontSizeHeading3 }}>
+              {user.nickname}
+            </Typography.Text>
           </Flex>
           <Flex vertical gap={0}>
             <div style={{ fontSize: token.fontSizeHeading5 }}>四川·乐山</div>
-            <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>{user.email}</Typography.Text>
+            <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>
+              {user.email}
+            </Typography.Text>
           </Flex>
           <Flex>
             <Button
               block
               onClick={async () => {
                 if (friend && username) {
-                  const chat = await mailpenDatabase.chats.findOne({ selector: { _id: username } }).exec()
+                  const chat = await mailpenDatabase.chats
+                    .findOne({ selector: { _id: username } })
+                    .exec()
                   if (!chat) {
                     await mailpenDatabase.chats.insert({
                       _id: username,
@@ -58,14 +73,13 @@ function UserInfo(props: UserInfoProps) {
                       count: 0,
                       createdAt: new Date().toISOString(),
                       updatedAt: new Date().toISOString(),
-                      pinned: false,
+                      pinned: false
                     })
                   }
                   navigate(`/chat/${username}`)
-                }
-                else {
+                } else {
                   createRequest({
-                    friendId: username || user._id,
+                    friendId: username || user._id
                   }).then(() => {
                     messageApi.success('好友申请成功')
                   })
@@ -77,8 +91,17 @@ function UserInfo(props: UserInfoProps) {
           </Flex>
         </Flex>
         <Card className={styles.right}>
-          <div style={{ color: token.colorTextSecondary, marginBottom: token.marginXS }}>个人简介</div>
-          <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>{user.bio}</Typography.Text>
+          <div
+            style={{
+              color: token.colorTextSecondary,
+              marginBottom: token.marginXS
+            }}
+          >
+            个人简介
+          </div>
+          <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>
+            {user.bio}
+          </Typography.Text>
         </Card>
       </Flex>
     </Flex>

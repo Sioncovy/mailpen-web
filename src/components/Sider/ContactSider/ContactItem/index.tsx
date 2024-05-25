@@ -13,9 +13,9 @@ function ContactItem({ contact }: ContactItemProps) {
   const [ref, { width }] = useMeasure<HTMLDivElement>()
   const { token } = useThemeToken()
   const { remark } = contact
-  const { avatar, bio, nickname, username } = contact
+  const { avatar, bio, nickname, username, _id } = contact
   const navigate = useNavigate()
-  const { username: routeUsername } = useParams()
+  const { id } = useParams()
   const [useModal, modalContext] = Modal.useModal()
 
   return (
@@ -37,11 +37,10 @@ function ContactItem({ contact }: ContactItemProps) {
                       defaultValue={remark}
                     />
                   ),
-                  onOk: () => { },
-                  onCancel: () => { },
-
+                  onOk: () => {},
+                  onCancel: () => {}
                 })
-              },
+              }
             },
             {
               key: 'group',
@@ -50,42 +49,48 @@ function ContactItem({ contact }: ContactItemProps) {
                 useModal.confirm({
                   title: '修改分组',
                   content: (
-                    <Input
-                      style={{ width: '100%' }}
-                      placeholder="请输入分组"
-                    />
+                    <Input style={{ width: '100%' }} placeholder="请输入分组" />
                   ),
-                  onOk: () => { },
-                  onCancel: () => { },
+                  onOk: () => {},
+                  onCancel: () => {}
                 })
-              },
-            },
-          ],
+              }
+            }
+          ]
         }}
         trigger={['contextMenu']}
       >
         <Flex
           ref={ref}
           onClick={async () => {
-            navigate(`/contact/${username}`)
+            navigate(`/contact/${_id}`)
           }}
-          style={{ backgroundColor: routeUsername === username ? token.colorPrimaryActive : undefined }}
+          style={{
+            backgroundColor: id === _id ? token.colorPrimaryActive : undefined
+          }}
           gap={10}
           className={styles.contactItem}
         >
-          <div style={{ minWidth: 50, height: 50, borderRadius: '50%', overflow: 'hidden' }}>
+          <div
+            style={{
+              minWidth: 50,
+              height: 50,
+              borderRadius: '50%',
+              overflow: 'hidden'
+            }}
+          >
             <img style={{ height: '100%' }} src={avatar} />
           </div>
           <Flex vertical style={{ width: width - 60 }} justify="space-between">
             <Flex justify="space-between" align="center">
               <Typography.Text ellipsis style={{ fontSize: token.fontSizeLG }}>
-                {remark ? `${remark}（${nickname || username}）` : nickname || username}
+                {remark
+                  ? `${remark}（${nickname || username}）`
+                  : nickname || username}
               </Typography.Text>
             </Flex>
             <Flex justify="space-between" align="center">
-              <Typography.Text ellipsis>
-                {bio}
-              </Typography.Text>
+              <Typography.Text ellipsis>{bio}</Typography.Text>
             </Flex>
           </Flex>
         </Flex>

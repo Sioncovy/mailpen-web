@@ -3,12 +3,12 @@ import type { Common, UserPublic } from '..'
 export enum FriendRequestStatus {
   Pending = 'pending',
   Accepted = 'accepted',
-  Rejected = 'rejected',
+  Rejected = 'rejected'
 }
 
 export enum FriendStatus {
   Normal = 'normal',
-  Blocked = 'blocked',
+  Blocked = 'blocked'
 }
 
 export interface Request extends Common, UserPublic {
@@ -25,4 +25,6 @@ export interface Contact extends UserPublic {
   request: Request
   // 备注
   remark?: string
+  // 星标好友
+  star?: boolean
 }

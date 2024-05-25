@@ -9,7 +9,9 @@ export async function queryUserInfo(username: string): Promise<UserPublic> {
   return request.get(`/users/${username}`)
 }
 
-export async function login(data: Pick<User, 'username' | 'password'>): Promise<{
+export async function login(
+  data: Pick<User, 'username' | 'password'>
+): Promise<{
   accessToken: string
   // uploadToken: string
   userInfo: UserPublic
@@ -17,6 +19,8 @@ export async function login(data: Pick<User, 'username' | 'password'>): Promise<
   return request.post('/users/login', data)
 }
 
-export async function register(data: Pick<User, 'username' | 'password'>): Promise<void> {
+export async function register(
+  data: Pick<User, 'username' | 'password'>
+): Promise<void> {
   return request.post('/users/register', data)
 }

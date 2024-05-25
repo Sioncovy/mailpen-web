@@ -57,7 +57,7 @@ const routes: RouteObject[] = [
         ),
         children: [
           {
-            path: ':username',
+            path: ':id',
             element: <ContactDetail />
           },
           {
