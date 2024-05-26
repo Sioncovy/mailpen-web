@@ -1,4 +1,4 @@
-import { updateContact } from '@/apis'
+import { updateContact, deleteContact } from '@/apis'
 import { useThemeToken } from '@/hooks'
 import { mailpenDatabase } from '@/storages'
 import type { Contact } from '@/typings'
@@ -104,7 +104,14 @@ function ContactInfo(props: ContactInfoProps) {
                     title: '删除好友',
                     content: '确定要删除该好友吗？',
                     onOk: async () => {
-                      navigate('/contacts')
+                      deleteContact(contact._id)
+                        .then(() => {
+                          messageApi.success('删除成功')
+                          navigate('/contact')
+                        })
+                        .catch(() => {
+                          messageApi.error('删除失败')
+                        })
                     }
                   })
                 }}

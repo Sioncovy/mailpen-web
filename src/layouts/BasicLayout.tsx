@@ -56,6 +56,12 @@ function BasicLayout(props: any) {
 
   const selectedKey = pathname.split('/')[1]
 
+  const getContactList = () => {
+    queryContactList().then((res) => {
+      if (res) setContactList(res)
+    })
+  }
+
   useEffect(() => {
     setLoading(true)
     const token = localStorage.getItem(AUTH_TOKEN_KEY)
@@ -78,9 +84,7 @@ function BasicLayout(props: any) {
         setLoading(false)
       })
 
-    queryContactList().then((res) => {
-      if (res) setContactList(res)
-    })
+    getContactList()
   }, [])
 
   if (loading) return <Loading height="100vh" />

@@ -48,3 +48,7 @@ export async function updateContact(
 ): Promise<Contact> {
   return request.put(`/contacts/${id}`, data)
 }
+
+export async function deleteContact(id: string): Promise<null> {
+  return request.delete(`/contacts/${id}`)
+}
