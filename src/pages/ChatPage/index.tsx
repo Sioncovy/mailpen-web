@@ -75,7 +75,7 @@ function ChatPage() {
   }
 
   useEffect(() => {
-    mailpenDatabase.chats.find().$.subscribe((list) => {
+    const subscription = mailpenDatabase.chats.find().$.subscribe((list) => {
       console.log('更新了 chat')
 
       setChatList(list)
@@ -92,6 +92,8 @@ function ChatPage() {
       socket.off('callbackChatMessage', callbackChatMessage)
       socket.off('onReadMessage', readMessage)
       socket.off('onUpdateMessage', updateMessage)
+
+      subscription.unsubscribe()
     }
   }, [])
 

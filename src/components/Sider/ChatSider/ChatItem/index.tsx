@@ -29,6 +29,7 @@ function ChatItem({ chat }: ChatItemProps) {
   const contentRender = () => {
     switch (Number(special)) {
       case MessageSpecialType.BurnAfterReading: {
+        if (content === '[阅后即焚]') return content
         mailpenDatabase.chats.findOne({ selector: { _id: chat._id } }).update({
           $set: {
             message: {
@@ -63,6 +64,8 @@ function ChatItem({ chat }: ChatItemProps) {
               key: 'pinned',
               label: pinned ? '取消置顶' : '置顶会话',
               onClick: () => {
+                console.log('pinned', !pinned)
+
                 mailpenDatabase.chats
                   .findOne({
                     selector: {
@@ -107,7 +110,11 @@ function ChatItem({ chat }: ChatItemProps) {
           }}
           className={styles.chatItem}
           style={{
-            backgroundColor: isActive ? token.colorPrimaryBg : undefined,
+            backgroundColor: isActive
+              ? token.colorPrimaryBg
+              : pinned
+              ? token.colorPrimaryActive
+              : undefined,
             padding: 10
           }}
           gap={10}

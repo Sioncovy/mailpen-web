@@ -1,14 +1,14 @@
+import FileInfo from '@/components/FileInfo'
+import { useTime } from '@/hooks'
+import { mailpenDatabase } from '@/storages'
+import { ChatMessageType, MessageSpecialType } from '@/typings'
+import { downloadFile } from '@/utils/file'
 import { Button, Card, Flex, Image, Tooltip, Typography } from 'antd'
+import dayjs from 'dayjs'
+import { useEffect } from 'react'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import styles from './index.module.less'
-import { ChatMessageType, MessageSpecialType } from '@/typings'
-import { useTime } from '@/hooks'
-import FileInfo from '@/components/FileInfo'
-import { downloadFile } from '@/utils/file'
-import { useEffect, useState } from 'react'
-import dayjs from 'dayjs'
-import { mailpenDatabase } from '@/storages'
 
 interface MessageProps {
   message: {
@@ -43,7 +43,6 @@ function Message({
   const isEdited = createdAt.getTime() !== updatedAt.getTime()
   const isLeft = position === 'left'
   const flexDirection = isLeft ? 'row' : 'row-reverse'
-  const [destroyTime, setDestroyTime] = useState<number>(0)
 
   useEffect(() => {
     if (special === MessageSpecialType.BurnAfterReading) {
@@ -52,7 +51,6 @@ function Message({
 
         console.log('✨  ~ useEffect ~ destroyTime:', destroyTime)
         setTimeout(() => {
-          console.log('destroy', content)
           mailpenDatabase.messages.findOne({ selector: { _id } }).remove()
         }, destroyTime)
       }

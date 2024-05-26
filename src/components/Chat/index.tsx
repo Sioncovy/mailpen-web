@@ -53,15 +53,17 @@ function Chat({ chat }: ChatProps) {
     if (!friend) return null
     queryContact(friend._id)
       .then((res) => {
-        if (res) {
+        const name = friend.remark || friend.nickname || friend.username
+        const avatar = friend.avatar
+        if (res && (name !== chat?.name || avatar !== chat?.avatar)) {
           mailpenDatabase.chats
             .findOne({
               selector: { _id: friend.username }
             })
             .update({
               $set: {
-                name: friend.remark || friend.nickname || friend.username,
-                avatar: friend.avatar
+                name,
+                avatar
               }
             })
         }
@@ -99,16 +101,18 @@ function Chat({ chat }: ChatProps) {
   }
 
   useLayoutEffect(() => {
-    setTimeout(() => {
+    setTimeout(async () => {
       scrollToBottom()
       if (friend) {
-        mailpenDatabase.chats
-          .findOne({
-            selector: { _id: friend.username }
-          })
-          .update({
+        const chatRaw = mailpenDatabase.chats.findOne({
+          selector: { _id: friend.username }
+        })
+        const chat = await chatRaw.exec()
+        if (chat?.count !== 0) {
+          chatRaw.update({
             $set: { count: 0 }
           })
+        }
         readMessage()
       }
     }, 100)
