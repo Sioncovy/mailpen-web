@@ -104,6 +104,12 @@ function Message({
           阅后即焚
         </Typography.Text>
       )
+    } else if (special === MessageSpecialType.BurnAfterTime) {
+      return (
+        <Typography.Text style={{ fontSize: 12 }} type="secondary">
+          限时消息
+        </Typography.Text>
+      )
     }
   }
 
@@ -140,7 +146,7 @@ function Message({
         >
           {contentRender()}
         </Card>
-        <Flex gap={4} align="center" style={{ flexDirection }}>
+        <Flex gap={8} align="center" style={{ flexDirection }}>
           <Flex gap={4} align="center">
             <Typography.Text style={{ fontSize: 12 }} type="secondary">
               {read ? '已读' : '未读'}
