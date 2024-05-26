@@ -18,9 +18,11 @@ interface MailpenDatabaseCollections {
   messages: MessageCollection
 }
 
-export const mailpenDatabase = await createRxDatabase<RxDatabase<MailpenDatabaseCollections>>({
+export const mailpenDatabase = await createRxDatabase<
+  RxDatabase<MailpenDatabaseCollections>
+>({
   name: 'mailpen',
-  storage: getRxStorageDexie(),
+  storage: getRxStorageDexie()
 })
 
 const chatSchema: RxJsonSchema<Chat> = {
@@ -30,33 +32,42 @@ const chatSchema: RxJsonSchema<Chat> = {
   properties: {
     _id: {
       type: 'string',
-      maxLength: 100, // <- the primary key must have set maxLength
+      maxLength: 100 // <- the primary key must have set maxLength
     },
     name: {
-      type: 'string',
+      type: 'string'
     },
     avatar: {
-      type: 'string',
+      type: 'string'
     },
     message: {
-      type: 'object',
+      type: 'object'
     },
     count: {
-      type: 'number',
+      type: 'number'
     },
     createdAt: {
       type: 'string',
-      format: 'date-time',
+      format: 'date-time'
     },
     updatedAt: {
       type: 'string',
-      format: 'date-time',
+      format: 'date-time'
     },
     pinned: {
-      type: 'boolean',
-    },
+      type: 'boolean'
+    }
   },
-  required: ['_id', 'name', 'avatar', 'message', 'count', 'createdAt', 'updatedAt', 'pinned'],
+  required: [
+    '_id',
+    'name',
+    'avatar',
+    'message',
+    'count',
+    'createdAt',
+    'updatedAt',
+    'pinned'
+  ]
 } as const
 
 const messageSchema: RxJsonSchema<Message> = {
@@ -66,40 +77,53 @@ const messageSchema: RxJsonSchema<Message> = {
   properties: {
     _id: {
       type: 'string',
-      maxLength: 100, // <- the primary key must have set maxLength
+      maxLength: 100 // <- the primary key must have set maxLength
     },
     content: {
-      type: 'string',
+      type: 'string'
     },
     type: {
-      type: 'number',
+      type: 'number'
     },
     sender: {
-      type: 'string',
+      type: 'string'
     },
     receiver: {
-      type: 'string',
+      type: 'string'
     },
     read: {
-      type: 'boolean',
+      type: 'boolean'
+    },
+    special: {
+      type: 'number'
     },
     createdAt: {
       type: 'string',
-      format: 'date-time',
+      format: 'date-time'
     },
     updatedAt: {
       type: 'string',
-      format: 'date-time',
-    },
+      format: 'date-time'
+    }
   },
-  required: ['_id', 'content', 'type', 'sender', 'receiver', 'read', 'createdAt', 'updatedAt'],
+  required: [
+    '_id',
+    'content',
+    'type',
+    'special',
+    'sender',
+    'receiver',
+    'read',
+    'createdAt',
+    'updatedAt'
+  ]
 } as const
 
 await mailpenDatabase.addCollections({
   chats: {
-    schema: chatSchema,
+    schema: chatSchema
   },
   messages: {
-    schema: messageSchema,
-  },
+    schema: messageSchema
+  }
 })

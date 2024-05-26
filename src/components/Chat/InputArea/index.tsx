@@ -3,12 +3,13 @@ import EmojiPicker from '@/components/EmojiPicker'
 import FileInfo from '@/components/FileInfo'
 import TextButton from '@/components/TextButton'
 import { socket, useThemeToken } from '@/hooks'
-import { ChatMessageType } from '@/typings'
+import { ChatMessageType, MessageSpecialType } from '@/typings'
 import { createObjectURL } from '@/utils'
 import {
   AudioOutlined,
   FileImageOutlined,
   FileOutlined,
+  FireOutlined,
   SmileOutlined,
   StopOutlined
 } from '@ant-design/icons'
@@ -45,9 +46,12 @@ function InputArea({ userId, friendId }: InputAreaProps) {
   const [emojiOpen, setEmojiOpen] = useState<boolean>(false)
   const [useModal, modalContext] = Modal.useModal()
   const { token } = useThemeToken()
-  const [type, setType] = useState<string>('normal')
+  const [type, setType] = useState<'normal' | 'audio'>('normal')
   const [audioRecordStatus, setAudioRecordStatus] = useState<AudioRecordStatus>(
     AudioRecordStatus.Init
+  )
+  const [special, setSpecial] = useState<MessageSpecialType>(
+    MessageSpecialType.Normal
   )
 
   useEffect(() => {
@@ -68,7 +72,6 @@ function InputArea({ userId, friendId }: InputAreaProps) {
       // recorder.downloadWAV('test')
       setAudioRecordStatus(AudioRecordStatus.Init)
       const blob = recorder.getWAVBlob()
-      console.log('✨  ~ onClick={ ~ blob:', blob)
       const file = new File([blob], 'audio.wav', {
         type: 'audio/wav'
       })
@@ -77,7 +80,8 @@ function InputArea({ userId, friendId }: InputAreaProps) {
           content: res,
           sender: userId,
           receiver: friendId,
-          type: ChatMessageType.Audio
+          type: ChatMessageType.Audio,
+          special
         })
       })
     }
@@ -126,7 +130,8 @@ function InputArea({ userId, friendId }: InputAreaProps) {
                         content: res.url,
                         sender: userId,
                         receiver: friendId,
-                        type: ChatMessageType.Image
+                        type: ChatMessageType.Image,
+                        special
                       })
                       URL.revokeObjectURL(url)
                     },
@@ -153,7 +158,8 @@ function InputArea({ userId, friendId }: InputAreaProps) {
                         content: res,
                         sender: userId,
                         receiver: friendId,
-                        type: ChatMessageType.File
+                        type: ChatMessageType.File,
+                        special
                       })
                     },
                     onCancel: () => {}
@@ -173,6 +179,24 @@ function InputArea({ userId, friendId }: InputAreaProps) {
                 }}
               />
             </Tooltip>
+            <Tooltip title="阅后即焚：对方已读五秒后自动销毁">
+              <Button
+                type="text"
+                icon={
+                  <FireOutlined
+                    style={{
+                      color:
+                        special === MessageSpecialType.BurnAfterReading
+                          ? token.colorPrimary
+                          : undefined
+                    }}
+                  />
+                }
+                onClick={() => {
+                  setSpecial(MessageSpecialType.BurnAfterReading)
+                }}
+              />
+            </Tooltip>
           </Flex>
           <Input.TextArea
             value={content}
@@ -186,7 +210,8 @@ function InputArea({ userId, friendId }: InputAreaProps) {
                   content,
                   sender: userId,
                   receiver: friendId,
-                  type: ChatMessageType.Text
+                  type: ChatMessageType.Text,
+                  special
                 })
                 setContent('')
               }

@@ -41,21 +41,21 @@ function ContactItem({ contact }: ContactItemProps) {
                   onCancel: () => {}
                 })
               }
-            },
-            {
-              key: 'group',
-              label: '修改分组',
-              onClick: () => {
-                useModal.confirm({
-                  title: '修改分组',
-                  content: (
-                    <Input style={{ width: '100%' }} placeholder="请输入分组" />
-                  ),
-                  onOk: () => {},
-                  onCancel: () => {}
-                })
-              }
             }
+            // {
+            //   key: 'group',
+            //   label: '修改分组',
+            //   onClick: () => {
+            //     useModal.confirm({
+            //       title: '修改分组',
+            //       content: (
+            //         <Input style={{ width: '100%' }} placeholder="请输入分组" />
+            //       ),
+            //       onOk: () => {},
+            //       onCancel: () => {}
+            //     })
+            //   }
+            // }
           ]
         }}
         trigger={['contextMenu']}

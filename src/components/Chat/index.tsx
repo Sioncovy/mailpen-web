@@ -83,7 +83,7 @@ function Chat({ chat }: ChatProps) {
     if (friend) {
       const notReadMessageList = mailpenDatabase.messages
         .find({
-          selector: { sender: friend._id, read: false }
+          selector: { sender: friend._id, receiver: user._id, read: false }
         })
         .exec()
       notReadMessageList.then((res) => {
@@ -365,13 +365,15 @@ function Chat({ chat }: ChatProps) {
                 <Message
                   key={message._id}
                   message={{
+                    _id: message._id,
                     avatar: info?.avatar || '',
                     content: message.content,
                     type: message.type,
                     createdAt: new Date(message.createdAt),
                     updatedAt: new Date(message.updatedAt),
                     position: isSelf ? 'right' : 'left',
-                    read: message.read
+                    read: message.read,
+                    special: message.special
                   }}
                 />
               )

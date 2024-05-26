@@ -5,7 +5,13 @@ export enum ChatMessageType {
   Image,
   Audio,
   Video,
-  File,
+  File
+}
+
+export enum MessageSpecialType {
+  Normal,
+  BurnAfterReading,
+  BurnAfterTime
 }
 
 export interface Chat extends Common {
@@ -19,6 +25,7 @@ export interface Chat extends Common {
 export interface Message extends Common {
   content: string
   type: ChatMessageType
+  special: MessageSpecialType
   sender: string
   receiver: string
   read: boolean
