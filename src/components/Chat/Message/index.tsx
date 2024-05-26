@@ -3,7 +3,17 @@ import { useTime } from '@/hooks'
 import { mailpenDatabase } from '@/storages'
 import { ChatMessageType, MessageSpecialType } from '@/typings'
 import { downloadFile } from '@/utils/file'
-import { Button, Card, Flex, Image, Tooltip, Typography } from 'antd'
+import {
+  Button,
+  Card,
+  Dropdown,
+  Flex,
+  Image,
+  Modal,
+  Tooltip,
+  Typography,
+  message
+} from 'antd'
 import dayjs from 'dayjs'
 import { useEffect } from 'react'
 import Markdown from 'react-markdown'
@@ -23,6 +33,7 @@ interface MessageProps {
     read: boolean
     special: MessageSpecialType
   }
+  withdrawMessage: (id: string) => void
 }
 
 function Message({
@@ -37,12 +48,16 @@ function Message({
     read,
     type,
     special
-  }
+  },
+  withdrawMessage
 }: MessageProps) {
   const time = useTime()
   const isEdited = createdAt.getTime() !== updatedAt.getTime()
   const isLeft = position === 'left'
   const flexDirection = isLeft ? 'row' : 'row-reverse'
+
+  const [messageApi, messageContextHolder] = message.useMessage()
+  const [modalApi, modalContextHolder] = Modal.useModal()
 
   useEffect(() => {
     if (special === MessageSpecialType.BurnAfterReading) {
@@ -91,6 +106,9 @@ function Message({
           </audio>
         )
       }
+      case ChatMessageType.Tip: {
+        return <Typography.Text type="secondary">{content}</Typography.Text>
+      }
       default: {
         return <Typography.Text type="danger">消息异常</Typography.Text>
       }
@@ -119,6 +137,8 @@ function Message({
       style={{ height: 'auto', flexDirection }}
       className={styles.message}
     >
+      {messageContextHolder}
+      {modalContextHolder}
       <div
         style={{
           minWidth: 40,
@@ -131,21 +151,75 @@ function Message({
       </div>
       <Flex vertical style={{ maxWidth: '70%' }}>
         <div>{name}</div>
-        <Card
-          size="small"
-          style={{
-            width: 'fit-content',
-            maxWidth: '100%',
-            alignSelf: isLeft ? 'flex-start' : 'flex-end'
+        <Dropdown
+          disabled={position === 'left'}
+          menu={{
+            items: [
+              {
+                key: 'copy',
+                label: '复制',
+                onClick: () => {
+                  navigator.clipboard
+                    .writeText(content)
+                    .then(() => {
+                      messageApi.success('复制成功')
+                    })
+                    .catch(() => {
+                      messageApi.error('复制失败')
+                    })
+                }
+              },
+              {
+                key: 'delete',
+                label: '删除',
+                onClick: () => {
+                  modalApi.confirm({
+                    title: '删除消息',
+                    content:
+                      '确定删除该消息吗？此删除仅对您本地有效，对方仍可查看。',
+                    onOk: async () => {
+                      await mailpenDatabase.messages
+                        .findOne({
+                          selector: {
+                            _id
+                          }
+                        })
+                        .remove()
+                    }
+                  })
+                }
+              },
+              {
+                key: 'withdraw',
+                label: '撤回',
+                onClick: () => {
+                  modalApi.confirm({
+                    title: '撤回消息',
+                    content: '确定撤回该消息吗？',
+                    onOk: () => withdrawMessage(_id)
+                  })
+                }
+              }
+            ]
           }}
-          styles={{
-            body: {
-              padding: '8px 12px'
-            }
-          }}
+          trigger={['contextMenu']}
         >
-          {contentRender()}
-        </Card>
+          <Card
+            size="small"
+            style={{
+              width: 'fit-content',
+              maxWidth: '100%',
+              alignSelf: isLeft ? 'flex-start' : 'flex-end'
+            }}
+            styles={{
+              body: {
+                padding: '8px 12px'
+              }
+            }}
+          >
+            {contentRender()}
+          </Card>
+        </Dropdown>
         <Flex gap={8} align="center" style={{ flexDirection }}>
           <Flex gap={4} align="center">
             <Typography.Text style={{ fontSize: 12 }} type="secondary">

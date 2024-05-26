@@ -62,6 +62,15 @@ function ChatItem({ chat }: ChatItemProps) {
       case ChatMessageType.File: {
         return '[文件]'
       }
+      case ChatMessageType.Audio: {
+        return '[音频]'
+      }
+      case ChatMessageType.Video: {
+        return '[视频]'
+      }
+      case ChatMessageType.Tip: {
+        return content
+      }
     }
   }
 

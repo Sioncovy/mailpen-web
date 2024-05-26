@@ -5,7 +5,8 @@ export enum ChatMessageType {
   Image,
   Audio,
   Video,
-  File
+  File,
+  Tip
 }
 
 export enum MessageSpecialType {

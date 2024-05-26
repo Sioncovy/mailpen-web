@@ -10,6 +10,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import VideoPlayer from '../MediaPlayer'
 import InputArea from './InputArea'
 import Message from './Message'
+import Home from '@/pages/Home'
 
 interface ChatProps {
   chat?: ChatType
@@ -294,7 +295,15 @@ function Chat({ chat }: ChatProps) {
     }
   }
 
-  if (!chat || !friend) return <div>请选择正确的好友</div>
+  const withdrawMessage = async (id: string) => {
+    socket.emit('withdrawMessage', {
+      id,
+      chatId: friend?.username,
+      receiver: friend?._id
+    })
+  }
+
+  if (!chat || !friend) return <Home />
 
   return (
     <Flex
@@ -379,6 +388,7 @@ function Chat({ chat }: ChatProps) {
                     read: message.read,
                     special: message.special
                   }}
+                  withdrawMessage={withdrawMessage}
                 />
               )
             })}

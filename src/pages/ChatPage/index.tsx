@@ -4,7 +4,12 @@ import Chat from '@/components/Chat'
 import ChatSider from '@/components/Sider/ChatSider'
 import MainLayout from '@/layouts/MainLayout'
 import { mailpenDatabase } from '@/storages'
-import type { Chat as ChatType, Message } from '@/typings'
+import {
+  ChatMessageType,
+  MessageSpecialType,
+  type Chat as ChatType,
+  type Message
+} from '@/typings'
 import { socket, useAppStore, useTime } from '@/hooks'
 import { useLatest } from 'ahooks'
 
@@ -74,6 +79,27 @@ function ChatPage() {
     await mailpenDatabase.messages.insert(message)
   }
 
+  const withdrawMessage = async ({ id }: { id: string }) => {
+    await mailpenDatabase.messages.findOne({ selector: { _id: id } }).update({
+      $set: {
+        content: '消息已撤回',
+        type: ChatMessageType.Tip,
+        special: MessageSpecialType.Normal
+      }
+    })
+    await mailpenDatabase.chats
+      .findOne({ selector: { _id: username } })
+      .update({
+        $set: {
+          message: {
+            content: '消息已撤回',
+            type: ChatMessageType.Tip,
+            special: MessageSpecialType.Normal
+          }
+        }
+      })
+  }
+
   useEffect(() => {
     const subscription = mailpenDatabase.chats.find().$.subscribe((list) => {
       console.log('更新了 chat')
@@ -87,12 +113,14 @@ function ChatPage() {
     socket.on('onReadMessage', readMessage)
     socket.on('onUpdateMessage', updateMessage)
 
+    socket.on('onWithdrawMessage', withdrawMessage)
+
     return () => {
       socket.off('receiveChatMessage', receiveMessage)
       socket.off('callbackChatMessage', callbackChatMessage)
       socket.off('onReadMessage', readMessage)
       socket.off('onUpdateMessage', updateMessage)
-
+      socket.off('onWithdrawMessage', withdrawMessage)
       subscription.unsubscribe()
     }
   }, [])
