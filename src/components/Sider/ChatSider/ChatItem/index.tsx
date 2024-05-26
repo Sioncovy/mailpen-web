@@ -40,6 +40,17 @@ function ChatItem({ chat }: ChatItemProps) {
         })
         return '[阅后即焚]'
       }
+      case MessageSpecialType.BurnAfterTime: {
+        if (content === '[限时消息]') return content
+        mailpenDatabase.chats.findOne({ selector: { _id: chat._id } }).update({
+          $set: {
+            message: {
+              ...message,
+              content: '[限时消息]'
+            }
+          }
+        })
+      }
     }
     switch (Number(type)) {
       case ChatMessageType.Text: {

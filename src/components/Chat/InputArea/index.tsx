@@ -7,6 +7,7 @@ import { ChatMessageType, MessageSpecialType } from '@/typings'
 import { createObjectURL } from '@/utils'
 import {
   AudioOutlined,
+  ClockCircleOutlined,
   FileImageOutlined,
   FileOutlined,
   FireOutlined,
@@ -193,7 +194,33 @@ function InputArea({ userId, friendId }: InputAreaProps) {
                   />
                 }
                 onClick={() => {
-                  setSpecial(MessageSpecialType.BurnAfterReading)
+                  setSpecial(
+                    special === MessageSpecialType.BurnAfterReading
+                      ? MessageSpecialType.Normal
+                      : MessageSpecialType.BurnAfterReading
+                  )
+                }}
+              />
+            </Tooltip>
+            <Tooltip title="限时消息：发送五秒后自动销毁">
+              <Button
+                type="text"
+                icon={
+                  <ClockCircleOutlined
+                    style={{
+                      color:
+                        special === MessageSpecialType.BurnAfterTime
+                          ? token.colorPrimary
+                          : undefined
+                    }}
+                  />
+                }
+                onClick={() => {
+                  setSpecial(
+                    special === MessageSpecialType.BurnAfterTime
+                      ? MessageSpecialType.Normal
+                      : MessageSpecialType.BurnAfterTime
+                  )
                 }}
               />
             </Tooltip>

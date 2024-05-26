@@ -48,12 +48,15 @@ function Message({
     if (special === MessageSpecialType.BurnAfterReading) {
       if (read) {
         const destroyTime = 5000 - (dayjs().valueOf() - updatedAt.valueOf())
-
-        console.log('✨  ~ useEffect ~ destroyTime:', destroyTime)
         setTimeout(() => {
           mailpenDatabase.messages.findOne({ selector: { _id } }).remove()
         }, destroyTime)
       }
+    } else if (special === MessageSpecialType.BurnAfterTime) {
+      const destroyTime = 5000 - (dayjs().valueOf() - createdAt.valueOf())
+      setTimeout(() => {
+        mailpenDatabase.messages.findOne({ selector: { _id } }).remove()
+      }, destroyTime)
     }
   }, [read])
 
