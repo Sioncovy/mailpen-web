@@ -31,3 +31,7 @@ export async function register(
 export async function getAuthSvg(timestamp: number): Promise<string> {
   return request.get(`/users/authCode?timestamp=${timestamp}`)
 }
+
+export async function sendEmailCode(data: { email: string }) {
+  return request.post('/email/sendCode', data)
+}
