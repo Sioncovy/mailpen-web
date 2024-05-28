@@ -19,6 +19,7 @@ import { useEffect } from 'react'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import styles from './index.module.less'
+import { DownloadOutlined } from '@ant-design/icons'
 
 interface MessageProps {
   message: {
@@ -81,20 +82,25 @@ function Message({
         return <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
       }
       case ChatMessageType.Image: {
-        return <Image src={content} />
+        return <Image src={content} style={{ maxWidth: 400 }} />
       }
       case ChatMessageType.File: {
         return (
           <Flex gap={8} style={{ width: '100%' }}>
             <FileInfo name={content.filename} size={content.size} />
-            <Button
+            <DownloadOutlined
+              onClick={() => {
+                downloadFile(content.url, content.filename)
+              }}
+            />
+            {/* <Button
               size="small"
               onClick={() => {
                 downloadFile(content.url, content.filename)
               }}
             >
               下载
-            </Button>
+            </Button> */}
           </Flex>
         )
       }
@@ -226,6 +232,11 @@ function Message({
               {read ? '已读' : '未读'}
             </Typography.Text>
             {renderSpecialTips()}
+            {isEdited && (
+              <Typography.Text style={{ fontSize: 12 }} type="secondary">
+                已编辑
+              </Typography.Text>
+            )}
           </Flex>
           <Flex
             gap={4}
@@ -233,11 +244,6 @@ function Message({
             className={styles.extraInfo}
             style={{ flexDirection }}
           >
-            {isEdited && (
-              <Typography.Text style={{ fontSize: 12 }} type="secondary">
-                已编辑
-              </Typography.Text>
-            )}
             <Tooltip
               placement="bottom"
               title={time(createdAt).format('YYYY-MM-DD HH:mm:ss')}

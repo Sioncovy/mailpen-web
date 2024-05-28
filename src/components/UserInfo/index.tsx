@@ -48,7 +48,7 @@ function UserInfo(props: UserInfoProps) {
                 {user.username}
               </Typography.Text>
               <Typography.Text style={{ fontSize: token.fontSizeHeading3 }}>
-                {user.nickname}
+                {user.nickname || user.username}
               </Typography.Text>
             </Flex>
             <Flex vertical gap={0}>

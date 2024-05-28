@@ -57,7 +57,7 @@ function ContactInfo(props: ContactInfoProps) {
             </Typography.Text> */}
           </Flex>
           <Flex vertical gap={0}>
-            <div style={{ fontSize: token.fontSizeHeading5 }}>四川·乐山</div>
+            {/* <div style={{ fontSize: token.fontSizeHeading5 }}>四川·乐山</div> */}
             <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>
               {contact.email}
             </Typography.Text>

@@ -7,6 +7,7 @@ import { Language, Theme } from '@/typings'
 interface State {
   theme: Theme
   primaryColor: string
+  layoutColor: string
   language: Language
   userInfo: UserPublic
   contactList: Contact[]
@@ -16,6 +17,7 @@ interface State {
 interface Actions {
   setTheme: (theme: Theme) => void
   setPrimaryColor: (primaryColor: string) => void
+  setLayoutColor: (layoutColor: string) => void
   setUserInfo: (userInfo: UserPublic) => void
   setContactList: (contactList: Contact[]) => void
 }
@@ -27,6 +29,7 @@ export const useAppStore = create(
     immer<Store>((set) => ({
       theme: Theme.Light,
       primaryColor: '#5e7e1e',
+      layoutColor: '#f0f2f5',
       language: Language.Zh,
       userInfo: {} as UserPublic,
       contactList: [],
@@ -34,6 +37,7 @@ export const useAppStore = create(
 
       setTheme: (theme) => set({ theme }),
       setPrimaryColor: (primaryColor) => set({ primaryColor }),
+      setLayoutColor: (layoutColor) => set({ layoutColor }),
       setUserInfo: (userInfo) => set({ userInfo }),
       setContactList: (contactList) => {
         const contactMap = new Map<string, Contact>()

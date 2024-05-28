@@ -32,14 +32,26 @@ export interface SettingType {
 }
 
 export enum SettingKeys {
-  theme = 'theme',
+  theme = 'theme'
 }
 
 function SettingPage() {
   const { name } = useParams()
-  const [theme, setTheme, primaryColor, setPrimaryColor] = useAppStore(state =>
-    [state.theme, state.setTheme, state.primaryColor, state.setPrimaryColor],
-  )
+  const [
+    theme,
+    setTheme,
+    primaryColor,
+    setPrimaryColor,
+    layoutColor,
+    setLayoutColor
+  ] = useAppStore((state) => [
+    state.theme,
+    state.setTheme,
+    state.primaryColor,
+    state.setPrimaryColor,
+    state.layoutColor,
+    state.setLayoutColor
+  ])
 
   const settingsMap: {
     [key: string]: SettingType
@@ -58,17 +70,17 @@ function SettingPage() {
             options: [
               {
                 label: '浅色',
-                value: Theme.Light,
+                value: Theme.Light
               },
               {
                 label: '深色',
-                value: Theme.Dark,
-              },
+                value: Theme.Dark
+              }
             ],
             onChange(e) {
               setTheme(e.target.value)
-            },
-          },
+            }
+          }
         },
         {
           type: 'color-picker',
@@ -82,33 +94,46 @@ function SettingPage() {
             showText: true,
             size: 'middle',
             style: {
-              width: 'fit-content',
-            },
-          },
-        },
-      ],
+              width: 'fit-content'
+            }
+          }
+        }
+        // {
+        //   type: 'color-picker',
+        //   key: 'backgroundColor',
+        //   label: '背景色',
+        //   props: {
+        //     value: layoutColor,
+        //     onChange(color) {
+        //       setLayoutColor(color.toHexString())
+        //     },
+        //     showText: true,
+        //     size: 'middle',
+        //     style: {
+        //       width: 'fit-content'
+        //     }
+        //   }
+        // }
+      ]
     },
     account: {
       title: '账号设置',
       key: 'AccountSetting',
       content: '更改账号的相关设置',
-      settings: [],
-    },
+      settings: []
+    }
   }
 
   const page = useMemo(() => {
     const keys = Object.values(SettingKeys) as string[]
     const isCorrect = Boolean(name && keys.includes(name))
-    if (!name)
-      return <></>
+    if (!name) return <></>
 
-    return isCorrect
-      ? <Setting config={settingsMap[name]} />
-      : (
-        <div>
-          请选择一个正确的设置项
-        </div>
-        )
+    return isCorrect ? (
+      <Setting config={settingsMap[name]} />
+    ) : (
+      <div>请选择一个正确的设置项</div>
+    )
   }, [name, settingsMap])
 
   return (

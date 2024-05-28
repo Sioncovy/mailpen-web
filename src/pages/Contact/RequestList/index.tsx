@@ -1,26 +1,46 @@
-import { approveRequest, queryRequestList, rejectRequest } from '@/apis'
+import {
+  approveRequest,
+  queryContactList,
+  queryRequestList,
+  rejectRequest
+} from '@/apis'
 import { useAppStore, useThemeToken, useTime } from '@/hooks'
 import { FriendRequestStatus, type Request } from '@/typings'
-import { Dropdown, Flex, Modal, Typography } from 'antd'
+import { Dropdown, Flex, message, Modal, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import styles from './index.module.less'
 
 function RequestList() {
-  const [userInfo] = useAppStore((state) => [state.userInfo])
+  const [userInfo, setContactList] = useAppStore((state) => [
+    state.userInfo,
+    state.setContactList
+  ])
   const [requestList, setRequestList] = useState<Request[]>([])
   const time = useTime()
   const { token } = useThemeToken()
   const [modal, modalContextHolder] = Modal.useModal()
+  const [messageApi, messageContextHolder] = message.useMessage()
 
-  useEffect(() => {
+  const getContactList = () => {
+    queryContactList().then((res) => {
+      if (res) setContactList(res)
+    })
+  }
+
+  const getRequestList = () => {
     queryRequestList().then((res) => {
       setRequestList(res)
     })
+  }
+
+  useEffect(() => {
+    getRequestList()
   }, [])
 
   return (
     <Flex vertical gap={12} className={styles.container} align="center">
       {modalContextHolder}
+      {messageContextHolder}
       {requestList.map((request) => {
         const isSelf = userInfo._id === request.user._id
         const friend = isSelf ? request.friend : request.user
@@ -75,6 +95,14 @@ function RequestList() {
                     approveRequest({
                       requestId: request._id
                     })
+                      .then(() => {
+                        getContactList()
+                        getRequestList()
+                        messageApi.success({ content: '已同意好友申请' })
+                      })
+                      .catch((e) => {
+                        messageApi.error({ content: e.message })
+                      })
                   }}
                   menu={{
                     items: [
@@ -94,6 +122,15 @@ function RequestList() {
                             rejectRequest({
                               requestId: request._id
                             })
+                              .then(() => {
+                                getRequestList()
+                                messageApi.success({
+                                  content: '已拒绝好友申请'
+                                })
+                              })
+                              .catch(() => {
+                                messageApi.error({ content: '拒绝失败' })
+                              })
                           }
                         })
                       }

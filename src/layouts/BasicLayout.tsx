@@ -44,14 +44,21 @@ function AddThemeToVars() {
 function BasicLayout(props: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const [theme, userInfo, setUserInfo, setContactList, primaryColor] =
-    useAppStore((state) => [
-      state.theme,
-      state.userInfo,
-      state.setUserInfo,
-      state.setContactList,
-      state.primaryColor
-    ])
+  const [
+    theme,
+    userInfo,
+    setUserInfo,
+    setContactList,
+    primaryColor,
+    layoutColor
+  ] = useAppStore((state) => [
+    state.theme,
+    state.userInfo,
+    state.setUserInfo,
+    state.setContactList,
+    state.primaryColor,
+    state.layoutColor
+  ])
   const [loading, setLoading] = useState(true)
 
   const selectedKey = pathname.split('/')[1]
@@ -94,6 +101,7 @@ function BasicLayout(props: any) {
       theme={{
         token: {
           colorPrimary: primaryColor
+          // colorBgContainer: layoutColor
         },
         algorithm:
           theme === Theme.Light
@@ -123,7 +131,10 @@ function BasicLayout(props: any) {
           </Flex>
           <Menu
             selectedKeys={[selectedKey]}
-            style={{ height: 'calc(100%-40px)', borderInlineEnd: 'none' }}
+            style={{
+              height: 'calc(100vh-40px)',
+              borderInlineEnd: 'none'
+            }}
             items={[
               {
                 key: 'chat',

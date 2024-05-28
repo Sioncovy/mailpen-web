@@ -8,13 +8,17 @@ import { useAppStore, useThemeToken } from '@/hooks'
 
 function ContactSider() {
   const navigate = useNavigate()
-  const [contactList] = useAppStore(state => [state.contactList])
+  const [contactList] = useAppStore((state) => [state.contactList])
   const { token } = useThemeToken()
   const [type, setType] = useState<'contact' | 'group'>('contact')
 
   return (
     <Flex vertical className={styles.sider}>
-      <Flex style={{ padding: `20px ${token.marginSM}px` }} className={styles.topBar} gap={8}>
+      <Flex
+        style={{ padding: `20px ${token.marginSM}px` }}
+        className={styles.topBar}
+        gap={8}
+      >
         <Input style={{ flex: 1 }} placeholder="搜索" />
         <Button
           type="primary"
@@ -37,10 +41,10 @@ function ContactSider() {
           <Typography.Text>好友通知</Typography.Text>
           <RightOutlined />
         </Flex>
-        <Flex className={styles.notifyItem} flex={1} justify="space-between">
+        {/* <Flex className={styles.notifyItem} flex={1} justify="space-between">
           <Typography.Text>群聊通知</Typography.Text>
           <RightOutlined />
-        </Flex>
+        </Flex> */}
       </Flex>
       <Flex vertical gap={12}>
         <Divider style={{ margin: 0 }} />
@@ -52,20 +56,16 @@ function ContactSider() {
             setType(value as 'contact' | 'group')
           }}
           options={[
-            { label: '好友', value: 'contact' },
-            { label: '群聊', value: 'group' },
+            { label: '好友', value: 'contact' }
+            // { label: '群聊', value: 'group' },
           ]}
         />
         <div className={styles.list}>
-          {type === 'contact' && contactList.map(contact => (
-            <ContactItem
-              key={contact._id}
-              contact={contact}
-            />
-          ))}
-          {
-            type === 'group' && <div>群组</div>
-          }
+          {type === 'contact' &&
+            contactList.map((contact) => (
+              <ContactItem key={contact._id} contact={contact} />
+            ))}
+          {type === 'group' && <div>群组</div>}
         </div>
       </Flex>
     </Flex>

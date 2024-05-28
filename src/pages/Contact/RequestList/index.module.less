@@ -1,4 +1,4 @@
-@import url("@/themes/index.less");
+@import url('@/themes/index.less');
 
 .container {
   width: 100%;
@@ -20,13 +20,18 @@
       overflow: hidden;
       border: 1px solid @colorBorder;
       border-radius: 50%;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
 
     .nickname {
       cursor: pointer;
 
       &:hover {
-        color: @colorPrimaryHover
+        color: @colorPrimaryHover;
       }
     }
   }

@@ -8,6 +8,7 @@ import type { UserPublic } from '@/typings'
 function ContactSearch() {
   const { token } = useThemeToken()
   const [userInfo, setUserInfo] = useState<UserPublic | null>(null)
+  const [username, setUsername] = useState('')
 
   return (
     <Flex
@@ -25,15 +26,28 @@ function ContactSearch() {
           <Input.Search
             placeholder="搜索用户"
             onSearch={(value) => {
+              setUsername(value)
               queryUserInfo(value).then((res) => {
                 setUserInfo(res)
               })
             }}
           />
-          {userInfo && (
+          {userInfo ? (
             <Card style={{ width: '100%' }}>
               <UserInfo user={userInfo} />
             </Card>
+          ) : (
+            <Flex justify="center">
+              <Typography.Title
+                level={5}
+                style={{
+                  color: token.colorTextSecondary,
+                  fontWeight: 'normal'
+                }}
+              >
+                {username ? `> 未查询到用户 <` : '请输入用户名进行搜索'}
+              </Typography.Title>
+            </Flex>
           )}
         </Flex>
       </Card>
