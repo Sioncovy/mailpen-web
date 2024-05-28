@@ -1,4 +1,4 @@
-import { ColorPicker, Flex, Radio, Typography } from 'antd'
+import { ColorPicker, Flex, Radio, Switch, Typography } from 'antd'
 import type { SettingConfig, SettingType } from '@/pages/SettingPage'
 import { useThemeToken } from '@/hooks'
 
@@ -12,13 +12,11 @@ function Setting({ config }: SettingProps) {
   const renderSetting = (setting: SettingConfig) => {
     switch (setting.type) {
       case 'radio-group':
-        return (
-          <Radio.Group
-            {...setting.props}
-          />
-        )
+        return <Radio.Group {...setting.props} />
       case 'color-picker':
-        return (<ColorPicker {...setting.props} />)
+        return <ColorPicker {...setting.props} />
+      case 'switch':
+        return <Switch {...setting.props} style={{ maxWidth: 50 }} />
       default:
         return null
     }

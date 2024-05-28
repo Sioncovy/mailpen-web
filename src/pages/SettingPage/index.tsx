@@ -1,11 +1,11 @@
-import type { ColorPickerProps, RadioGroupProps } from 'antd'
+import type { ColorPickerProps, RadioGroupProps, SwitchProps } from 'antd'
 import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import Setting from '@/components/Setting'
 import SettingSider from '@/components/Sider/SettingSider'
 import { useAppStore } from '@/hooks'
 import MainLayout from '@/layouts/MainLayout'
-import { Theme } from '@/typings'
+import { MessageSpecialType, Theme } from '@/typings'
 
 export interface CommonConfigProps {
   key: string
@@ -22,7 +22,15 @@ export interface ColorPickerConfigProp extends CommonConfigProps {
   props: ColorPickerProps
 }
 
-export type SettingConfig = RadioGroupConfigProp | ColorPickerConfigProp
+export interface SwitchConfigProp extends CommonConfigProps {
+  type: 'switch'
+  props: SwitchProps
+}
+
+export type SettingConfig =
+  | RadioGroupConfigProp
+  | ColorPickerConfigProp
+  | SwitchConfigProp
 
 export interface SettingType {
   title: string
@@ -32,7 +40,10 @@ export interface SettingType {
 }
 
 export enum SettingKeys {
-  theme = 'theme'
+  theme = 'theme',
+  account = 'account',
+  security = 'security',
+  about = 'about'
 }
 
 function SettingPage() {
@@ -42,15 +53,27 @@ function SettingPage() {
     setTheme,
     primaryColor,
     setPrimaryColor,
-    layoutColor,
-    setLayoutColor
+    // layoutColor,
+    // setLayoutColor,
+    special,
+    setSpecial,
+    chatMsgPreview,
+    setChatMsgPreview,
+    newMsgPreview,
+    setNewMsgPreview
   ] = useAppStore((state) => [
     state.theme,
     state.setTheme,
     state.primaryColor,
     state.setPrimaryColor,
-    state.layoutColor,
-    state.setLayoutColor
+    // state.layoutColor,
+    // state.setLayoutColor,
+    state.special,
+    state.setSpecial,
+    state.chatMsgPreview,
+    state.setChatMsgPreview,
+    state.newMsgPreview,
+    state.setNewMsgPreview
   ])
 
   const settingsMap: {
@@ -121,12 +144,78 @@ function SettingPage() {
       key: 'AccountSetting',
       content: '更改账号的相关设置',
       settings: []
+    },
+    security: {
+      title: '安全设置',
+      key: 'SecuritySetting',
+      content: '更改账号的安全设置',
+      settings: [
+        {
+          type: 'switch',
+          key: 'new-message-preview',
+          label: '会话消息预览',
+          props: {
+            checked: newMsgPreview,
+            onChange(checked) {
+              setNewMsgPreview(checked)
+            },
+            checkedChildren: '开',
+            unCheckedChildren: '关'
+          }
+        },
+        {
+          type: 'switch',
+          key: 'chat-message-view',
+          label: '会话中隐藏消息内容',
+          props: {
+            checked: !chatMsgPreview,
+            onChange(checked) {
+              setChatMsgPreview(!checked)
+            },
+            checkedChildren: '开',
+            unCheckedChildren: '关'
+          }
+        },
+        {
+          type: 'radio-group',
+          key: 'special',
+          label: '消息类型',
+          props: {
+            value: special,
+            onChange(e) {
+              setSpecial(e.target.value)
+            },
+            options: [
+              {
+                label: '正常消息',
+                value: MessageSpecialType.Normal
+              },
+              {
+                label: '阅后即焚',
+                value: MessageSpecialType.BurnAfterReading
+              },
+              {
+                label: '限时消息',
+                value: MessageSpecialType.BurnAfterTime
+              }
+            ]
+          }
+        }
+      ]
+    },
+    about: {
+      title: '关于',
+      key: 'AboutSetting',
+      content: '关于应用的相关信息',
+      settings: []
     }
   }
 
   const page = useMemo(() => {
     const keys = Object.values(SettingKeys) as string[]
+    console.log('✨  ~ page ~ keys:', keys)
     const isCorrect = Boolean(name && keys.includes(name))
+    console.log('✨  ~ page ~ isCorrect:', isCorrect)
     if (!name) return <></>
 
     return isCorrect ? (

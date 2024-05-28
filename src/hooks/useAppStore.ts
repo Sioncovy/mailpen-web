@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type { Contact, UserPublic } from '@/typings'
-import { Language, Theme } from '@/typings'
+import { Language, MessageSpecialType, Theme } from '@/typings'
 
 interface State {
   theme: Theme
@@ -12,6 +12,9 @@ interface State {
   userInfo: UserPublic
   contactList: Contact[]
   contactMap: Map<string, Contact>
+  special: MessageSpecialType
+  chatMsgPreview: boolean
+  newMsgPreview: boolean
 }
 
 interface Actions {
@@ -20,6 +23,9 @@ interface Actions {
   setLayoutColor: (layoutColor: string) => void
   setUserInfo: (userInfo: UserPublic) => void
   setContactList: (contactList: Contact[]) => void
+  setSpecial: (special: MessageSpecialType) => void
+  setChatMsgPreview: (chatMsgPreview: boolean) => void
+  setNewMsgPreview: (newMsgPreview: boolean) => void
 }
 
 type Store = State & Actions
@@ -34,6 +40,9 @@ export const useAppStore = create(
       userInfo: {} as UserPublic,
       contactList: [],
       contactMap: new Map(),
+      special: MessageSpecialType.Normal,
+      chatMsgPreview: true,
+      newMsgPreview: true,
 
       setTheme: (theme) => set({ theme }),
       setPrimaryColor: (primaryColor) => set({ primaryColor }),
@@ -43,7 +52,10 @@ export const useAppStore = create(
         const contactMap = new Map<string, Contact>()
         contactList.forEach((contact) => contactMap.set(contact._id, contact))
         set({ contactList, contactMap })
-      }
+      },
+      setSpecial: (special) => set({ special }),
+      setChatMsgPreview: (chatMsgPreview) => set({ chatMsgPreview }),
+      setNewMsgPreview: (newMsgPreview) => set({ newMsgPreview })
     })),
     {
       name: 'app-store',
@@ -52,7 +64,10 @@ export const useAppStore = create(
         return {
           theme: state.theme,
           primaryColor: state.primaryColor,
-          language: state.language
+          language: state.language,
+          special: state.special,
+          chatMsgPreview: state.chatMsgPreview,
+          newMsgPreview: state.newMsgPreview
         }
       }
     }

@@ -2,7 +2,7 @@ import { uploadFile } from '@/apis'
 import EmojiPicker from '@/components/EmojiPicker'
 import FileInfo from '@/components/FileInfo'
 import TextButton from '@/components/TextButton'
-import { socket, useThemeToken } from '@/hooks'
+import { socket, useAppStore, useThemeToken } from '@/hooks'
 import { ChatMessageType, MessageSpecialType } from '@/typings'
 import { createObjectURL } from '@/utils'
 import {
@@ -41,6 +41,8 @@ enum AudioRecordStatus {
 }
 
 function InputArea({ userId, friendId }: InputAreaProps) {
+  const [globalSpecial] = useAppStore((state) => [state.special])
+
   const [recorder, setRecorder] = useState<Recorder>()
 
   const [content, setContent] = useState<string>('')
@@ -51,9 +53,7 @@ function InputArea({ userId, friendId }: InputAreaProps) {
   const [audioRecordStatus, setAudioRecordStatus] = useState<AudioRecordStatus>(
     AudioRecordStatus.Init
   )
-  const [special, setSpecial] = useState<MessageSpecialType>(
-    MessageSpecialType.Normal
-  )
+  const [special, setSpecial] = useState<MessageSpecialType>(globalSpecial)
 
   useEffect(() => {
     if (type === 'audio') {
