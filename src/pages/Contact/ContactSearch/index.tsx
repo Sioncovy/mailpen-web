@@ -1,4 +1,4 @@
-import { Card, Flex, Input } from 'antd'
+import { Card, Flex, Input, Typography } from 'antd'
 import { useState } from 'react'
 import { queryUserInfo } from '@/apis'
 import UserInfo from '@/components/UserInfo'
@@ -10,22 +10,33 @@ function ContactSearch() {
   const [userInfo, setUserInfo] = useState<UserPublic | null>(null)
 
   return (
-    <Flex vertical gap={token.paddingLG} style={{ padding: token.paddingLG }}>
-      <Card style={{ width: '100%' }}>
-        <Input.Search
-          placeholder="搜索用户"
-          onSearch={(value) => {
-            queryUserInfo(value).then((res) => {
-              setUserInfo(res)
-            })
-          }}
-        />
+    <Flex
+      vertical
+      gap={token.paddingLG}
+      style={{
+        padding: token.paddingLG,
+        background: token.colorBgLayout,
+        height: '100%'
+      }}
+    >
+      <Typography.Title level={3}>搜索用户</Typography.Title>
+      <Card style={{ width: '100%', flex: 1 }}>
+        <Flex vertical gap={24}>
+          <Input.Search
+            placeholder="搜索用户"
+            onSearch={(value) => {
+              queryUserInfo(value).then((res) => {
+                setUserInfo(res)
+              })
+            }}
+          />
+          {userInfo && (
+            <Card style={{ width: '100%' }}>
+              <UserInfo user={userInfo} />
+            </Card>
+          )}
+        </Flex>
       </Card>
-      {userInfo && (
-        <Card style={{ width: '100%' }}>
-          <UserInfo user={userInfo} />
-        </Card>
-      )}
     </Flex>
   )
 }

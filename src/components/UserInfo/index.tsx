@@ -33,77 +33,80 @@ function UserInfo(props: UserInfoProps) {
   return (
     <Flex justify="center">
       {messageContextHolder}
-      <Flex gap={40} className={styles.container}>
-        <Flex gap={8} vertical className={styles.left}>
-          <img className={styles.avatar} src={user.avatar} />
-          <Flex vertical gap={0}>
-            <Typography.Text
-              style={{
-                fontSize: token.fontSizeHeading4,
-                color: token.colorTextTertiary,
-                marginBottom: -token.marginXS
-              }}
-            >
-              {user.username}
-            </Typography.Text>
-            <Typography.Text style={{ fontSize: token.fontSizeHeading3 }}>
-              {user.nickname}
-            </Typography.Text>
-          </Flex>
-          <Flex vertical gap={0}>
-            <div style={{ fontSize: token.fontSizeHeading5 }}>四川·乐山</div>
-            <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>
-              {user.email}
-            </Typography.Text>
-          </Flex>
-          <Flex>
-            <Button
-              block
-              onClick={async () => {
-                if (friend && username) {
-                  const chat = await mailpenDatabase.chats
-                    .findOne({ selector: { _id: username } })
-                    .exec()
-                  if (!chat) {
-                    await mailpenDatabase.chats.insert({
-                      _id: username,
-                      name: friend.remark || friend.nickname || friend.username,
-                      avatar: friend.avatar,
-                      message: null,
-                      count: 0,
-                      createdAt: new Date().toISOString(),
-                      updatedAt: new Date().toISOString(),
-                      pinned: false
+      <Card>
+        <Flex gap={40} className={styles.container}>
+          <Flex gap={8} vertical className={styles.left}>
+            <img className={styles.avatar} src={user.avatar} />
+            <Flex vertical gap={0}>
+              <Typography.Text
+                style={{
+                  fontSize: token.fontSizeHeading4,
+                  color: token.colorTextTertiary,
+                  marginBottom: -token.marginXS
+                }}
+              >
+                {user.username}
+              </Typography.Text>
+              <Typography.Text style={{ fontSize: token.fontSizeHeading3 }}>
+                {user.nickname}
+              </Typography.Text>
+            </Flex>
+            <Flex vertical gap={0}>
+              {/* <div style={{ fontSize: token.fontSizeHeading5 }}>四川·乐山</div> */}
+              <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>
+                {user.email}
+              </Typography.Text>
+            </Flex>
+            <Flex>
+              <Button
+                block
+                onClick={async () => {
+                  if (friend && username) {
+                    const chat = await mailpenDatabase.chats
+                      .findOne({ selector: { _id: username } })
+                      .exec()
+                    if (!chat) {
+                      await mailpenDatabase.chats.insert({
+                        _id: username,
+                        name:
+                          friend.remark || friend.nickname || friend.username,
+                        avatar: friend.avatar,
+                        message: null,
+                        count: 0,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        pinned: false
+                      })
+                    }
+                    navigate(`/chat/${username}`)
+                  } else {
+                    createRequest({
+                      friendId: username || user._id
+                    }).then(() => {
+                      messageApi.success('好友申请成功')
                     })
                   }
-                  navigate(`/chat/${username}`)
-                } else {
-                  createRequest({
-                    friendId: username || user._id
-                  }).then(() => {
-                    messageApi.success('好友申请成功')
-                  })
-                }
+                }}
+              >
+                {friend ? '去聊天' : '添加好友'}
+              </Button>
+            </Flex>
+          </Flex>
+          <Card className={styles.right}>
+            <div
+              style={{
+                color: token.colorTextSecondary,
+                marginBottom: token.marginXS
               }}
             >
-              {friend ? '去聊天' : '添加好友'}
-            </Button>
-          </Flex>
+              个人简介
+            </div>
+            <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>
+              {user.bio}
+            </Typography.Text>
+          </Card>
         </Flex>
-        <Card className={styles.right}>
-          <div
-            style={{
-              color: token.colorTextSecondary,
-              marginBottom: token.marginXS
-            }}
-          >
-            个人简介
-          </div>
-          <Typography.Text style={{ fontSize: token.fontSizeHeading5 }}>
-            {user.bio}
-          </Typography.Text>
-        </Card>
-      </Flex>
+      </Card>
     </Flex>
   )
 }
