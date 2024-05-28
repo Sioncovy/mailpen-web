@@ -10,7 +10,10 @@ export async function queryUserInfo(username: string): Promise<UserPublic> {
 }
 
 export async function login(
-  data: Pick<User, 'username' | 'password'>
+  data: Pick<User, 'username' | 'password'> & {
+    code: string
+    timestamp: number
+  }
 ): Promise<{
   accessToken: string
   // uploadToken: string
@@ -23,4 +26,8 @@ export async function register(
   data: Pick<User, 'username' | 'password'>
 ): Promise<void> {
   return request.post('/users/register', data)
+}
+
+export async function getAuthSvg(timestamp: number): Promise<string> {
+  return request.get(`/users/authCode?timestamp=${timestamp}`)
 }
