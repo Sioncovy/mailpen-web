@@ -3,5 +3,5 @@ import { REACT_APP_API } from '@/config'
 
 export const socket = io(REACT_APP_API, {
   transports: ['websocket'],
-  autoConnect: true,
+  autoConnect: true
 })

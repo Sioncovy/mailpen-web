@@ -5,6 +5,7 @@ import TextButton from '@/components/TextButton'
 import { socket, useAppStore, useThemeToken } from '@/hooks'
 import { ChatMessageType, MessageSpecialType } from '@/typings'
 import { createObjectURL } from '@/utils'
+import { encryptMessage } from '@/utils/crypto'
 import {
   AudioOutlined,
   ClockCircleOutlined,
@@ -233,8 +234,9 @@ function InputArea({ userId, friendId }: InputAreaProps) {
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()
+
                 socket.emit('sendChatMessage', {
-                  content,
+                  content: encryptMessage(content),
                   sender: userId,
                   receiver: friendId,
                   type: ChatMessageType.Text,

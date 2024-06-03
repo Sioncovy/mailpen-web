@@ -38,6 +38,9 @@ importers:
       axios-hooks:
         specifier: ^5.0.2
         version: 5.0.2(axios@1.6.7)(react@18.2.0)
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
       dayjs:
         specifier: ^1.11.10
         version: 1.11.10
@@ -62,6 +65,9 @@ importers:
       nanoid:
         specifier: ^5.0.7
         version: 5.0.7
+      node-forge:
+        specifier: ^1.3.1
+        version: 1.3.1
       qiniu-js:
         specifier: ^3.4.2
         version: 3.4.2
@@ -108,12 +114,18 @@ importers:
       '@antfu/eslint-config':
         specifier: ^2.6.4
         version: 2.6.4(@vue/compiler-sfc@3.4.15)(eslint-plugin-react-hooks@4.6.0(eslint@8.56.0))(eslint-plugin-react-refresh@0.4.5(eslint@8.56.0))(eslint@8.56.0)(typescript@5.3.3)
+      '@types/crypto-js':
+        specifier: ^4.2.2
+        version: 4.2.2
       '@types/lodash':
         specifier: ^4.14.202
         version: 4.14.202
       '@types/node':
         specifier: ^20.11.16
         version: 20.11.16
+      '@types/node-forge':
+        specifier: ^1.3.11
+        version: 1.3.11
       '@types/react':
         specifier: ^18.2.43
         version: 18.2.52
@@ -1019,6 +1031,9 @@ packages:
   '@types/cors@2.8.17':
     resolution: {integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==}
 
+  '@types/crypto-js@4.2.2':
+    resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
+
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
@@ -1069,6 +1084,9 @@ packages:
 
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
+
+  '@types/node-forge@1.3.11':
+    resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
 
   '@types/node@20.11.16':
     resolution: {integrity: sha512-gKb0enTmRCzXSSUJDq6/sPcqrfCv2mkkG6Jt/clpn5eiCbKTY+SgZUxo+p8ZKMof5dCp9vHQUAB7wOUTod22wQ==}
@@ -2756,6 +2774,10 @@ packages:
   nkeys.js@1.0.5:
     resolution: {integrity: sha512-u25YnRPHiGVsNzwyHnn+PT90sgAhnS8jUJ1nxmkHMFYCJ6+Ic0lv291w7uhRBpJVJ3PH2GWbYqA151lGCRrB5g==}
     engines: {node: '>=10.0.0'}
+
+  node-forge@1.3.1:
+    resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
+    engines: {node: '>= 6.13.0'}
 
   node-releases@2.0.14:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
@@ -4905,6 +4927,8 @@ snapshots:
     dependencies:
       '@types/node': 20.11.16
 
+  '@types/crypto-js@4.2.2': {}
+
   '@types/debug@4.1.12':
     dependencies:
       '@types/ms': 0.7.34
@@ -4960,6 +4984,10 @@ snapshots:
   '@types/mime@3.0.4': {}
 
   '@types/ms@0.7.34': {}
+
+  '@types/node-forge@1.3.11':
+    dependencies:
+      '@types/node': 20.11.16
 
   '@types/node@20.11.16':
     dependencies:
@@ -6999,6 +7027,8 @@ snapshots:
   nkeys.js@1.0.5:
     dependencies:
       tweetnacl: 1.0.3
+
+  node-forge@1.3.1: {}
 
   node-releases@2.0.14: {}
 

@@ -1,8 +1,20 @@
+import { queryContactList, queryProfile } from '@/apis'
+import Loading from '@/components/Loading'
+import { AUTH_TOKEN_KEY } from '@/config'
+import { socket, useAppStore, useThemeToken, useTime } from '@/hooks'
+import { mailpenDatabase } from '@/storages'
+import { ChatMessageType, Message, MessageSpecialType, Theme } from '@/typings'
+import {
+  decryptMessage,
+  decryptRSAEncryptedAESKey,
+  generateRSAKeyPair
+} from '@/utils/crypto'
 import {
   MessageOutlined,
   SettingOutlined,
   UserOutlined
 } from '@ant-design/icons'
+import { useLatest } from 'ahooks'
 import type { GlobalToken } from 'antd'
 import {
   Avatar,
@@ -12,14 +24,9 @@ import {
   Menu,
   theme as themeAntd
 } from 'antd'
-import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { socket, useAppStore, useThemeToken } from '@/hooks'
-import { AUTH_TOKEN_KEY } from '@/config'
-import Loading from '@/components/Loading'
-import { queryContactList, queryProfile } from '@/apis'
-import { Theme } from '@/typings'
 import zh from 'antd/es/locale/zh_CN'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 function AddThemeToVars() {
   const { token: realToken } = useThemeToken()
@@ -44,22 +51,140 @@ function AddThemeToVars() {
 function BasicLayout(props: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const params = useParams()
+  const username = params.username as string
   const [
     theme,
     userInfo,
     setUserInfo,
     setContactList,
-    primaryColor,
-    layoutColor
+    primaryColor
+    // layoutColor
   ] = useAppStore((state) => [
     state.theme,
     state.userInfo,
     state.setUserInfo,
     state.setContactList,
-    state.primaryColor,
-    state.layoutColor
+    state.primaryColor
+    // state.layoutColor
   ])
   const [loading, setLoading] = useState(true)
+
+  const time = useTime()
+  const [contactMap] = useAppStore((state) => [state.contactMap])
+  const contactMapRef = useLatest(contactMap)
+
+  const readMessage = ({ id }: { id: string }) => {
+    mailpenDatabase.messages
+      .findOne({
+        selector: { _id: id }
+      })
+      .update({
+        $set: {
+          read: true
+        }
+      })
+  }
+
+  const updateMessage = (message: Message) => {
+    mailpenDatabase.messages
+      .findOne({ selector: { _id: message._id } })
+      .update({
+        $set: message
+      })
+  }
+
+  const receiveMessage = async (message: Message) => {
+    const sender = contactMapRef.current.get(message.sender)
+    const chat = await mailpenDatabase.chats
+      .findOne({ selector: { _id: sender?.username } })
+      .exec()
+    if (message.type === ChatMessageType.Text) {
+      message.content = decryptMessage(message.content)
+    }
+
+    if (!chat) {
+      sender &&
+        (await mailpenDatabase.chats.insert({
+          _id: sender.username,
+          name: sender.remark || sender.nickname || sender.username,
+          avatar: sender.avatar || '',
+          message,
+          count: 1,
+          createdAt: message.createdAt,
+          updatedAt: message.updatedAt,
+          pinned: false
+        }))
+    } else {
+      await chat.update({
+        $set: {
+          message,
+          count: chat.count + 1,
+          updatedAt: message.updatedAt
+        }
+      })
+    }
+    await mailpenDatabase.messages.insert(message)
+  }
+
+  const callbackChatMessage = async (message: Message) => {
+    const target = contactMapRef.current.get(message.receiver)
+
+    const chat = await mailpenDatabase.chats
+      .findOne({ selector: { _id: target?.username } })
+      .exec()
+    if (message.type === ChatMessageType.Text) {
+      message.content = decryptMessage(message.content)
+    }
+    if (!chat) return
+    await chat.update({
+      $set: {
+        message,
+        count: chat.count + 1,
+        updatedAt: message.updatedAt
+      }
+    })
+    await mailpenDatabase.messages.insert(message)
+  }
+
+  const withdrawMessage = async ({ id }: { id: string }) => {
+    await mailpenDatabase.messages.findOne({ selector: { _id: id } }).update({
+      $set: {
+        content: '消息已撤回',
+        type: ChatMessageType.Tip,
+        special: MessageSpecialType.Normal
+      }
+    })
+    await mailpenDatabase.chats
+      .findOne({ selector: { _id: username } })
+      .update({
+        $set: {
+          message: {
+            content: '消息已撤回',
+            type: ChatMessageType.Tip,
+            special: MessageSpecialType.Normal
+          }
+        }
+      })
+  }
+
+  useEffect(() => {
+    socket.on('receiveChatMessage', receiveMessage)
+    socket.on('callbackChatMessage', callbackChatMessage)
+
+    socket.on('onReadMessage', readMessage)
+    socket.on('onUpdateMessage', updateMessage)
+
+    socket.on('onWithdrawMessage', withdrawMessage)
+
+    return () => {
+      socket.off('receiveChatMessage', receiveMessage)
+      socket.off('callbackChatMessage', callbackChatMessage)
+      socket.off('onReadMessage', readMessage)
+      socket.off('onUpdateMessage', updateMessage)
+      socket.off('onWithdrawMessage', withdrawMessage)
+    }
+  }, [])
 
   const selectedKey = pathname.split('/')[1]
 
@@ -78,10 +203,13 @@ function BasicLayout(props: any) {
     }
 
     queryProfile()
-      .then((res) => {
+      .then(async (res) => {
         setUserInfo(res)
+        const { privateKeyPem, publicKeyPem } = generateRSAKeyPair()
+        localStorage.setItem('privateKey', privateKeyPem)
         socket.emit('login', {
-          id: res._id
+          id: res._id,
+          key: publicKeyPem
         })
       })
       .catch(() => {
@@ -92,6 +220,15 @@ function BasicLayout(props: any) {
       })
 
     getContactList()
+
+    socket.on('onAesKey', (data: { key: string }) => {
+      const key = decryptRSAEncryptedAESKey(data.key)
+      localStorage.setItem('aesKey', key)
+    })
+
+    return () => {
+      socket.off('onAesKey')
+    }
   }, [])
 
   if (loading) return <Loading height="100vh" />
