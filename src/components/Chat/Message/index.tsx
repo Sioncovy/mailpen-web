@@ -3,23 +3,23 @@ import { useTime } from '@/hooks'
 import { mailpenDatabase } from '@/storages'
 import { ChatMessageType, MessageSpecialType } from '@/typings'
 import { downloadFile } from '@/utils/file'
+import { DownloadOutlined } from '@ant-design/icons'
 import {
-  Button,
   Card,
   Dropdown,
   Flex,
   Image,
+  Input,
   Modal,
   Tooltip,
   Typography,
   message
 } from 'antd'
 import dayjs from 'dayjs'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import styles from './index.module.less'
-import { DownloadOutlined } from '@ant-design/icons'
 
 interface MessageProps {
   message: {
@@ -56,6 +56,7 @@ function Message({
   const isEdited = createdAt.getTime() !== updatedAt.getTime()
   const isLeft = position === 'left'
   const flexDirection = isLeft ? 'row' : 'row-reverse'
+  const [newContent, setNewContent] = useState<string | undefined>()
 
   const [messageApi, messageContextHolder] = message.useMessage()
   const [modalApi, modalContextHolder] = Modal.useModal()
@@ -176,6 +177,56 @@ function Message({
                 }
               },
               {
+                key: 'edit',
+                label: '编辑',
+                onClick: () => {
+                  modalApi.confirm({
+                    title: '编辑消息',
+                    content: (
+                      <Input.TextArea
+                        defaultValue={content}
+                        onChange={(e) => {
+                          setNewContent(e.target.value)
+                        }}
+                        rows={4}
+                      />
+                    ),
+                    onOk: async () => {
+                      if (newContent) {
+                        await mailpenDatabase.messages
+                          .findOne({
+                            selector: {
+                              _id
+                            }
+                          })
+                          .update({
+                            $set: {
+                              content: newContent,
+                              updatedAt: new Date()
+                            }
+                          })
+                      }
+                    },
+                    okText: '保存',
+                    onCancel: () => {
+                      setNewContent(undefined)
+                    },
+                    cancelText: '取消'
+                  })
+                }
+              },
+              {
+                key: 'withdraw',
+                label: '撤回',
+                onClick: () => {
+                  modalApi.confirm({
+                    title: '撤回消息',
+                    content: '确定撤回该消息吗？',
+                    onOk: () => withdrawMessage(_id)
+                  })
+                }
+              },
+              {
                 key: 'delete',
                 label: '删除',
                 onClick: () => {
@@ -192,17 +243,6 @@ function Message({
                         })
                         .remove()
                     }
-                  })
-                }
-              },
-              {
-                key: 'withdraw',
-                label: '撤回',
-                onClick: () => {
-                  modalApi.confirm({
-                    title: '撤回消息',
-                    content: '确定撤回该消息吗？',
-                    onOk: () => withdrawMessage(_id)
                   })
                 }
               }
